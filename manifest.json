@@ -1,0 +1,12 @@
+{
+    "name": "Lock Picker",
+    "short_name": "Lock Picker",
+    "start_url": ".",
+    "display": "standalone",
+    "description": "javascript minigame",
+    "icons": [{
+      "src": "resources/icon_lockpicker.png",
+      "sizes":"361",
+      "type": "image/png"
+    }]
+  }
