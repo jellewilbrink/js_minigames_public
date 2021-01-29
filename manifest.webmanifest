@@ -4,17 +4,17 @@
     "theme_color": "#00c5d3",
     "background_color": "#00c5d3",
     "display": "minimal-ui",
-    "scope": "/",
-    "start_url": "/",
+    "scope": "/js_minigames_public/",
+    "start_url": "/js_minigames_public/",
     "description": "Simple arcade style minigames, based on JavaScript.",
     "icons": [
       {
-        "src": "resources/icons/icon192.png",
+        "src": "js_minigames_public/resources/icons/icon192.png",
         "sizes": "192x192",
         "type": "image/png"
       },
       {
-        "src": "resources/icons/icon512.png",
+        "src": "js_minigames_public/resources/icons/icon512.png",
         "sizes": "512x512",
         "type": "image/png"
       }
