@@ -1,0 +1,22 @@
+{
+    "name": "JS Minigames",
+    "short_name": "JS Games",
+    "theme_color": "#00c5d3",
+    "background_color": "#00c5d3",
+    "display": "minimal-ui",
+    "scope": "/",
+    "start_url": "/",
+    "description": "Simple arcade style minigames, based on JavaScript.",
+    "icons": [
+      {
+        "src": "resources/icons/icon192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "resources/icons/icon512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
