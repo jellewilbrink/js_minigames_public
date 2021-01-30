@@ -1,5 +1,5 @@
 const code_version="1.0";
-
+console.log("loaded the index.js file!!!");
 window.onload=()=>{
     //register the serviceworker
     if('serviceWorker' in navigator) {
