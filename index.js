@@ -1,4 +1,4 @@
-const code_version="1.0";
+const code_version="1.1";
 
 //display the current code version
 console.log("Site version: " + code_version);

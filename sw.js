@@ -2,9 +2,10 @@
 //MDN tutorial: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Offline_Service_workers
 
 // Files to cache
-const cacheName = 'minigames_cache-v1';
+const cacheName = 'minigames_cache-v1.1';
 const appShellFiles = [
   '/js_minigames_public/index.html',
+  '/js_minigames_public/w3.css',
   '/js_minigames_public/resources/icon_lockpicker.png',
   '/js_minigames_public/resources/icons/favicon.ico',
   '/js_minigames_public/resources/icons/icon16.png',
