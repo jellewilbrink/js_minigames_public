@@ -3,7 +3,7 @@
     "short_name": "JS Games",
     "theme_color": "#00c5d3",
     "background_color": "#00c5d3",
-    "display": "minimal-ui",
+    "display": "standalone",
     "scope": "/js_minigames_public/",
     "start_url": "/js_minigames_public/",
     "description": "Simple arcade style minigames, based on JavaScript.",
