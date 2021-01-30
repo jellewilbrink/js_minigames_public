@@ -1,0 +1,441 @@
+<!--wikipedia on some common color spectra: https://en.wikipedia.org/wiki/List_of_monochrome_and_RGB_color_formats#3-bit_RGB -->
+<!-- The 3 bit colors can be used using the following css colors: "red","lime","blue","magenta", "yellow" and "cyan" (and also "black" and "white") -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="resources/icons/icon_512.png">
+    <title>Lock picker game</title>
+</head>
+<body>
+</body>
+
+<script>
+    /* SOME CONSTRAINTS ON THE VARIABLES:
+    *** Goalsize must be greater than player diameter, else collision detection may fail
+    *** The Goalsize should also not be too large because otherwise the generation loaction constraints may never be met, crashing the game
+    */
+
+    /*  KNOWN ISSUES TO BE FIXED:
+    *** collision detection (especially on mobile android) is not always accurate  
+    */
+
+    const code_version="1.0";
+
+    var canvasEle=undefined;
+    var context;
+
+    //update the frame at constant framerate
+    const fps=60;
+    var GameTime=0; // gametime in frames
+    var gameClk; //variable holding timer that trigger frame refresh after set amount of time
+
+    var waitForListener=false;
+
+    var GameState="play";// current state of the game. list of states: play, gameover
+
+    var score=0; //number of hits the player made
+
+    var player_angle=0;     //angle of the player (in rad)
+    var playerCoord={x:150,y:250};
+    const playerSpeed_init=0.08 * (60/fps); //initial speed of the player. Normalized at 60fps, to make it independent of set framerate
+    const playerSpeed_final=1.5*0.08 * (60/fps); //maximum (aka final) speed of the player. Normalized at 60fps, to make it independent of set framerate
+    var playerSpeed=playerSpeed_init; //playerspeed in rad per frame
+    const playerRadius=15; //radius of the player in px
+    var sign=1; //the sign of the direction the player is moving in
+
+    var GoalPos=0; //lowest angle of the goal in rad
+    const GoalSize_init=0.8; //inital goalsize (in rad)
+    const GoalSize_final=0.35; //final goalsize (in rad)
+    var GoalSize=GoalSize_init; //size of the goal in rad
+
+    const default_ScreenSize={x:300, y:400}; //the for which the game animations were initially designed
+    var screenCoord_scale=1.0;
+    var translation_offset={x:0,y:0};
+
+    window.onload = () => {
+        init();
+    }
+
+    //initialize the game after loading the script
+    function init(){
+        //generate fullscreen canvas
+        sizeCanvas();
+
+        //binding eventlisteners
+        //mouseinputs
+        canvasEle.addEventListener('mousedown', mouseDownListener);
+        //touch inputs
+        canvasEle.addEventListener('touchstart', mouseDownListener);
+
+        //init variables
+        initVars();
+
+        //boot the game itself
+        gameClk = setInterval(updateGamestate,1000/fps);
+
+        //display the current version of the game
+        console.log("Game version: " + code_version);
+    }
+
+    //set all game variabes to their initial state, so that the game can start over again
+    function initVars(){
+        GameState="play";
+        score=0;
+        player_angle=0;
+        playerSpeed=playerSpeed_init;
+        sign=1;
+        GoalPos=0; //lowest angle of the goal in rad
+        GoalSize=GoalSize_init; //size of the goal in rad
+
+        //generate target
+        generateGoal();
+    }
+
+
+    //full screen and resizing canvas: https://riptutorial.com/html5-canvas/example/7516/creating-a-responsive-full-page-canvas
+
+    // Creates a canvas
+    function createCanvas () {                
+        const canvasEle = document.createElement("canvas"); 
+        canvasEle.style.position = "absolute"; // Set the style 
+        canvasEle.style.left     = "0px";      // Position in top left
+        canvasEle.style.top      = "0px";
+        canvasEle.style.zIndex   = 1;        
+        document.body.appendChild(canvasEle);  // Add to document
+        return canvasEle;
+    }
+    // Resizes canvas. Will create a canvas if it does not exist
+        function sizeCanvas () {                
+        if (canvasEle === undefined) {         // Check for global canvas reference
+            canvasEle = createCanvas();        // Create a new canvas element
+            context = canvasEle.getContext("2d" , { alpha: false });  // Get the 2D context
+        }
+        canvasEle.width  = innerWidth;         // Set the canvas resolution to fill the page
+        canvasEle.height = innerHeight;
+        
+        //also change the scaling of the drawn elements
+        setScreenCoord();
+        setWindowTranslation();
+    }
+    //initialize the screen coordinates based on the screensize
+    function setScreenCoord(){
+        //set the scaling factor to the smaller of the x and y scaling factors
+        var scale = canvasEle.width/default_ScreenSize.x;
+
+        if(canvasEle.height/default_ScreenSize.y < scale){
+            scale=canvasEle.height/default_ScreenSize.y;
+        }
+
+        scale=floor(scale, 1);
+
+        //apply minimum scale
+        if(scale<0.4){
+            scale=0.4;
+        }
+
+        //set the global variable to its new value
+        screenCoord_scale=scale;
+    }
+
+    //translate the window such that it is centered
+    function setWindowTranslation(){
+        translation_offset.x=(canvasEle.width-(default_ScreenSize.x)*screenCoord_scale)/2;
+        translation_offset.y=(canvasEle.height-(default_ScreenSize.y)*screenCoord_scale)/2;
+    }
+    
+    function ToScreenCoord(x,y){
+        return {x: x*screenCoord_scale,y: y*screenCoord_scale};
+    }
+
+    function updateGamestate(){
+        GameTime++;
+        switch(GameState){
+            case "play": 
+                if(!waitForListener){
+                    //only change player coordinates if there is no collision detection running for the current set of coordinates
+                    updatePlayer();
+                }
+                drawFrame();
+            break;
+            case "gameover": 
+                drawFrame_Gameover();
+            break;
+            default: console.log("ERROR: The game is not is a valid state..."); 
+            break;
+        }  
+    }
+
+     //declaring eventlisteners
+     const mouseDownListener = (event)=>{
+        waitForListener=true;
+        switch(GameState){
+            case "play": 
+                //check whether it was a hit
+                if(isCollision()){
+                    //if yes, change the sign
+                    sign*=-1;
+
+                    //increase difficulty to play
+                    nextLevel();
+                    //generate new goal
+                    generateGoal();
+                    //increase score counter
+                    score++;
+                }
+                else{
+                    //if no, game over
+                    GameState="gameover";
+                 }
+                break;
+            case "gameover": 
+                //restart the game
+                initVars();
+            break;
+            default: console.log("ERROR: The game is not is a valid state..."); 
+            break;
+        }      
+        event.preventDefault();
+        waitForListener=false;
+    }
+    
+    //calculate coordinates relative to canvas
+    const getClientOffset = (event)=>{
+        const {pageX, pageY}=event.touches ? event.touches[0]:event;
+        
+        const y=pageY-canvasEle.offsetTop;
+        const x=pageX-canvasEle.offsetLeft;
+
+        return {x,y};
+    }
+
+    const clearCanvas = ()=>{
+        context.clearRect(0,0,canvasEle.width, canvasEle.height);
+    }    
+
+    //update the position of the player
+    function updatePlayer(){
+        player_angle+=sign*playerSpeed;
+        playerCoord.x = 250 + 100*Math.cos(-1*player_angle);
+        playerCoord.y = 230 + 100*Math.sin(-1*player_angle);
+    }
+
+    //increase the game's difficulty to match the higher level
+    function nextLevel(){
+        //decrease goal size
+        const numSteps_goal=30; //number of steps goalsize take to reach final value
+        const numSteps_speed=30; //number of steps (aka levels) to take between initial and maximum player speed
+
+        //decrease goalsize
+        //only start increasing difficulty after some level is reached  
+        if(score>1){
+            //only decrease until the final value is reached
+            if(GoalSize>GoalSize_final)
+            {
+                GoalSize+= (GoalSize_final - GoalSize_init) /numSteps_goal;
+            }
+            else{
+                GoalSize=GoalSize_final;
+            }
+        }
+
+        //increase playerspeed
+        //only start increasing difficulty after some level is reached      
+        if(score>numSteps_goal - (numSteps_speed/4))
+        {
+            //only increase until the maximum value is reached
+            if(playerSpeed<playerSpeed_final)
+            {
+                playerSpeed+= (playerSpeed_final - playerSpeed_init) /numSteps_speed;
+            }
+            else{
+                playerSpeed=playerSpeed_final;
+            }
+        }
+    }
+
+    //generate new position for the goal
+    function generateGoal(){
+        let GoalPos_old=GoalPos;
+        while((Math.abs(GoalPos-GoalPos_old)<GoalSize)){
+            GoalPos = GoalPos_old -0.3*Math.PI + 1*Math.PI* Math.random();
+        }
+        if(GoalPos>2*Math.PI){
+            GoalPos-=2*Math.PI;
+        }
+        if(GoalPos<0){
+            GoalPos+=2*Math.PI;
+        }
+        if(GoalPos+GoalSize>2*Math.PI){
+            GoalPos-=GoalSize;
+        }
+    }
+
+    //checks for collision between player and goal
+    function isCollision(){
+        //calculate players angles
+        var Angle_player_center=player_angle%(2*Math.PI);
+        Angle_player_center = -1*(Angle_player_center-(2*Math.PI));
+
+        var Angle_player_upper=Angle_player_center + Math.asin(playerRadius/100);
+        var Angle_player_lower=Angle_player_center - Math.asin(playerRadius/100);
+
+        var GoalPos_upper=GoalPos+GoalSize;
+
+        if((Angle_player_upper>=GoalPos) &&(Angle_player_upper<=GoalPos_upper))
+        {
+            return true;
+        }
+        if((Angle_player_lower>=GoalPos) &&(Angle_player_lower<=GoalPos_upper))
+        {
+            return true;
+        }
+
+        //display angles (for debugging purposes)
+        /*console.log("player angle center: "+Angle_player_center);
+        console.log("player angle upper: "+Angle_player_upper);
+        console.log("player angle lower: "+Angle_player_lower);
+        console.log("goal angle: "+GoalPos);
+        var temp=GoalPos+GoalSize;
+        console.log("goal angle upper: "+temp);*/
+
+        //draw angle from zero to center (for debugging purposes)
+        /*context.beginPath();
+        context.arc(250,250,100,0,Angle_player_center);
+        context.strokeStyle="green";
+        context.stroke();*/
+
+        return false;
+    }
+
+    function drawFrame(){
+        
+        //entire canvas ref frame
+        clearCanvas();
+        //canvas background
+        context.beginPath();
+        context.rect(0,0,canvasEle.width, canvasEle.height);
+        context.fillStyle="cyan";
+        context.fill();
+
+        //game ref frame
+        context.translate(translation_offset.x,translation_offset.y);
+        //scale the drawings
+        context.scale(screenCoord_scale,screenCoord_scale);
+
+        context.translate(-100,0);
+        //draw the lock
+        //upper parts
+        context.beginPath();
+        context.moveTo(210,140);
+        context.lineTo(210,70);
+        context.bezierCurveTo(210,20,290,20,290,70);
+        context.lineTo(290,140);
+
+        context.strokeStyle="rgb(100, 100, 100)";
+        context.lineWidth=2*playerRadius;
+        context.stroke();
+        //inner circle
+        context.beginPath();
+        context.arc(250,230,100,0,2*Math.PI,1);
+        context.fillStyle="rgb(135, 135, 135)";
+        context.lineWidth=2*playerRadius;
+        context.fill();
+
+        context.beginPath();
+        context.arc(250,210,20,0,2*Math.PI,1);
+        context.fillStyle="black";
+        context.lineWidth=2*playerRadius;
+        context.fill();
+
+        context.beginPath();
+        context.rect(244,220,12,50);
+        context.fillStyle="black";
+        context.fill();
+
+        //central circle
+        context.beginPath();
+        context.arc(250,230,100,0,2*Math.PI,1);
+        context.strokeStyle="black";
+        context.lineWidth=2*playerRadius;
+        context.stroke();
+
+        //draw the goal
+        context.beginPath();
+        context.arc(250,230,100,GoalPos,GoalPos+GoalSize);
+        context.strokeStyle="magenta";
+        context.stroke();
+
+        //draw the cursor
+        context.beginPath();
+        context.arc(playerCoord.x,playerCoord.y,playerRadius,0,2*Math.PI,1);
+        context.fillStyle = "rgb(0,225,0)"; //lime but to increase intensity-contrast with magenta slightly less bright
+        context.fill();
+
+        //draw the score
+        context.font="30px Arial";
+        context.fillStyle = "black";
+        context.fillText("Score " + score,200, 390);
+        context.translate(100,0);
+
+        //show image frame
+        /*context.beginPath();
+        context.rect(0,0,300,400);
+        context.strokeStyle = "black";
+        context.lineWidth=5;
+        context.stroke();*/
+
+        //draw the framecounter
+        /*context.font="10px Arial";
+        context.fillStyle = "black";
+        context.fillText(GameTime,1, 11);*/
+
+        //reset the scale back to 1*real pixel
+        context.scale(1/screenCoord_scale,1/screenCoord_scale);
+        context.translate(-translation_offset.x,-translation_offset.y);  
+    }
+
+    function drawFrame_Gameover (){
+        context.translate(translation_offset.x,translation_offset.y);
+        //scale the drawings
+        context.scale(screenCoord_scale,screenCoord_scale);
+
+        context.translate(-100,0);
+
+        //draw background rectangle
+        context.beginPath();
+        context.rect(150,180,200,50);
+        context.fillStyle = "yellow";
+        context.fill();
+
+        //draw gameover text
+        context.font="30px Arial";
+        context.fillStyle = "black";
+        context.fillText("GAME OVER",160,220);
+
+        context.translate(100,0);
+
+        //reset the scale back to 1*real pixel
+        context.scale(1/screenCoord_scale,1/screenCoord_scale);
+        context.translate(-translation_offset.x,-translation_offset.y);
+    }
+
+    const round = (number, decimalPlaces) => {
+    const factorOfTen = Math.pow(10, decimalPlaces);
+    return Math.round(number * factorOfTen) / factorOfTen;
+    }
+
+    const floor = (number, decimalPlaces) => {
+        var rounded = round(number, decimalPlaces);
+        if(rounded>number){
+            const factorOfTen = Math.pow(10, -decimalPlaces);
+            rounded-=factorOfTen;
+        }
+        
+        return rounded;
+    }
+
+</script>
+</html>
