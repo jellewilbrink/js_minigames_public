@@ -2,20 +2,24 @@
 //MDN tutorial: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Offline_Service_workers
 
 // Files to cache
-const cacheName = 'minigames_cache-v1.3'; //version name convention: v<numgames>_<update_version>
+const cacheName = 'minigames_cache-v1.4'; //version name convention: v<numgames>_<update_version>
 const appShellFiles = [
   '/js_minigames_public/index.html',
   '/js_minigames_public/w3.css',
   '/js_minigames_public/resources/icon_lockpicker.png',
-  '/js_minigames_public/resources/icons/favicon.ico',
-  '/js_minigames_public/resources/icons/icon16.png',
-  '/js_minigames_public/resources/icons/icon36.png',
-  '/js_minigames_public/resources/icons/icon48.png',
-  '/js_minigames_public/resources/icons/icon72.png',
-  '/js_minigames_public/resources/icons/icon96.png',
-  '/js_minigames_public/resources/icons/icon144.png',
-  '/js_minigames_public/resources/icons/icon192.png',
-  '/js_minigames_public/resources/icons/icon512.png'
+  '/js_minigames_public/resources/icons/favicon.png',
+  '/js_minigames_public/resources/icons/icon36_mask.png',
+  '/js_minigames_public/resources/icons/icon48_mask.png',
+  '/js_minigames_public/resources/icons/icon72_mask.png',
+  '/js_minigames_public/resources/icons/icon96_mask.png',
+  '/js_minigames_public/resources/icons/icon120_mask.png',
+  '/js_minigames_public/resources/icons/icon144_mask.png',
+  '/js_minigames_public/resources/icons/icon152_mask.png',
+  '/js_minigames_public/resources/icons/icon167_mask.png',
+  '/js_minigames_public/resources/icons/icon180_mask.png',
+  '/js_minigames_public/resources/icons/icon192_mask.png',
+  '/js_minigames_public/resources/icons/icon300_mask.png',
+  '/js_minigames_public/resources/icons/icon512_mask.png'
 ];
 const gamesFiles = [
     '/js_minigames_public/games/lock_picker.html'
