@@ -2,7 +2,7 @@
 //MDN tutorial: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Offline_Service_workers
 
 // Files to cache
-const cacheName = 'minigames_cache-v1.5'; //version name convention: v<numgames>_<update_version>
+const cacheName = 'minigames_cache-v1.6'; //version name convention: v<numgames>_<update_version>
 const appShellFiles = [
   '/js_minigames_public/index.html',
   '/js_minigames_public/w3.css',
@@ -29,10 +29,10 @@ const contentToCache = appShellFiles.concat(gamesFiles);
 
 // Installing Service Worker
 self.addEventListener('install', (e) => {
-  console.log('[Service Worker] Install');
+  //console.log('[Service Worker] Install');
   e.waitUntil((async () => {
     const cache = await caches.open(cacheName);
-    console.log('[Service Worker] Caching all: app shell and content');
+    //console.log('[Service Worker] Caching all: app shell and content');
     await cache.addAll(contentToCache);
   })());
 });
@@ -41,11 +41,11 @@ self.addEventListener('install', (e) => {
 self.addEventListener('fetch', (e) => {
   e.respondWith((async () => {
     const r = await caches.match(e.request);
-    console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
+    //console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
     if (r) return r;
     const response = await fetch(e.request);
     const cache = await caches.open(cacheName);
-    console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
+    //console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
     cache.put(e.request, response.clone());
     return response;
   })());
