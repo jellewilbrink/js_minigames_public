@@ -2,7 +2,7 @@
 //MDN tutorial: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Offline_Service_workers
 
 // Files to cache
-const cacheName = 'minigames_cache-v1.61'; //version name convention: v<numgames>_<update_version>
+const cacheName = 'minigames_cache-v1.7'; //version name convention: v<numgames>_<update_version>
 const appShellFiles = [
   '/js_minigames_public/index.html',
   '/js_minigames_public/w3.css',
@@ -63,3 +63,10 @@ self.addEventListener('activate', (e) => {
       })
     );
   });
+
+//only activate the service worker when the app gives a clearance signal
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') {
+      self.skipWaiting();
+  }
+});
