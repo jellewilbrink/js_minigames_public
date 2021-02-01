@@ -285,7 +285,11 @@
     function isCollision(){
         //calculate players angles
         var Angle_player_center=player_angle%(2*Math.PI);
-        Angle_player_center = -1*(Angle_player_center-(2*Math.PI));
+        if(Angle_player_center>0){        
+            Angle_player_center = -1*(Angle_player_center-(2*Math.PI));
+        }        else{
+            Angle_player_center *=-1;
+        }
 
         var Angle_player_upper=Angle_player_center + Math.asin(playerRadius/100);
         var Angle_player_lower=Angle_player_center - Math.asin(playerRadius/100);
@@ -302,7 +306,7 @@
         }
 
         //display angles (for debugging purposes)
-        /*console.log("player angle center: "+Angle_player_center);
+       /*console.log("player angle center: "+Angle_player_center);
         console.log("player angle upper: "+Angle_player_upper);
         console.log("player angle lower: "+Angle_player_lower);
         console.log("goal angle: "+GoalPos);
@@ -399,6 +403,11 @@
         /*context.font="10px Arial";
         context.fillStyle = "black";
         context.fillText(GameTime,1, 11);*/
+
+        //draw playerangle
+        /*context.font="10px Arial";
+        context.fillStyle = "black";
+        context.fillText(player_angle,1, 11);*/
 
         //reset the scale back to 1*real pixel
         context.scale(1/screenCoord_scale,1/screenCoord_scale);
