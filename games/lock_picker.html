@@ -30,7 +30,7 @@
     *** collision detection (especially on mobile android) is not always accurate  
     */
 
-    const code_version="1.1";
+    const code_version="1.2";
 
     var canvasEle=undefined;
     var context;
@@ -337,7 +337,7 @@
         //scale the drawings
         context.scale(screenCoord_scale,screenCoord_scale);
 
-        context.translate(-100,0);
+        context.translate(-100, 30);
         //draw the lock
         //upper parts
         context.beginPath();
@@ -385,11 +385,13 @@
         context.arc(playerCoord.x,playerCoord.y,playerRadius,0,2*Math.PI,1);
         context.fillStyle = "rgb(0,225,0)"; //lime but to increase intensity-contrast with magenta slightly less bright
         context.fill();
+        context.translate(100,-30);
 
+        context.translate(-100,0);
         //draw the score
         context.font="30px Arial";
         context.fillStyle = "black";
-        context.fillText("Score " + score,200, 390);
+        context.fillText("Score " + score,200, 28);
         context.translate(100,0);
 
         //show image frame
