@@ -30,15 +30,16 @@
     *** collision detection (especially on mobile android) is not always accurate  
     */
 
-    const code_version="1.2";
+    const code_version="1.3";
 
     var canvasEle=undefined;
     var context;
 
     //update the frame at constant framerate
-    const fps=60;
+    const fps=60; //desired frames per second
+    var GameClk; //variable holding frame interval timer
     var GameTime=0; // gametime in frames
-    var gameClk; //variable holding timer that trigger frame refresh after set amount of time
+    var frametime={start:0.0, end:0.0, diff:function(){return this.end-this.start;}}; //start and end times of the previous frame, as well as the lenght of the frame (in ms)
 
     var waitForListener=false;
 
@@ -48,8 +49,8 @@
 
     var player_angle=0;     //angle of the player (in rad)
     var playerCoord={x:150,y:250};
-    const playerSpeed_init=0.08 * (60/fps); //initial speed of the player. Normalized at 60fps, to make it independent of set framerate
-    const playerSpeed_final=1.5*0.08 * (60/fps); //maximum (aka final) speed of the player. Normalized at 60fps, to make it independent of set framerate
+    const playerSpeed_init=0.08*60; //initial speed of the player. in rad/s
+    const playerSpeed_final=1.5*0.08*60 ; //maximum (aka final) speed of the player. in rad/s
     var playerSpeed=playerSpeed_init; //playerspeed in rad per frame
     const playerRadius=15; //radius of the player in px
     var sign=1; //the sign of the direction the player is moving in
@@ -82,7 +83,8 @@
         initVars();
 
         //boot the game itself
-        gameClk = setInterval(updateGamestate,1000/fps);
+        //window.requestAnimationFrame(updateGamestate);
+        GameClk=setInterval(updateGamestate,fps/1000);
 
         //display the current version of the game
         console.log("Game version: " + code_version);
@@ -159,6 +161,10 @@
     }
 
     function updateGamestate(){
+        //measure frametime
+        frametime.start=frametime.end;
+        frametime.end=performance.now();
+
         GameTime++;
         switch(GameState){
             case "play": 
@@ -173,7 +179,8 @@
             break;
             default: console.log("ERROR: The game is not is a valid state..."); 
             break;
-        }  
+        } 
+        //window.requestAnimationFrame(updateGamestate);
     }
 
      //declaring eventlisteners
@@ -225,7 +232,7 @@
 
     //update the position of the player
     function updatePlayer(){
-        player_angle+=sign*playerSpeed;
+        player_angle+=sign*playerSpeed*(frametime.diff()/1000);
         playerCoord.x = 250 + 100*Math.cos(-1*player_angle);
         playerCoord.y = 230 + 100*Math.sin(-1*player_angle);
     }
@@ -402,9 +409,9 @@
         context.stroke();*/
 
         //draw the framecounter
-        /*context.font="10px Arial";
+        context.font="10px Arial";
         context.fillStyle = "black";
-        context.fillText(GameTime,1, 11);*/
+        context.fillText(GameTime,1, 11);
 
         //draw playerangle
         /*context.font="10px Arial";
