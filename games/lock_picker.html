@@ -32,11 +32,13 @@
 
     const code_version="1.3";
 
-    var canvasEle=undefined;
-    var context;
+    var canvasEle=undefined; //var holding canvas
+    var context; //canvas context
+    var canvasEle_static=undefined; //var holding canvas for drawing static images
+    var context2; //static canvas context
 
     //update the frame at constant framerate
-    const fps=60; //desired frames per second
+    const fps=45; //desired frames per second
     var GameClk; //variable holding frame interval timer
     var GameTime=0; // gametime in frames
     var frametime={start:0.0, end:0.0, diff:function(){return this.end-this.start;}}; //start and end times of the previous frame, as well as the lenght of the frame (in ms)
@@ -82,6 +84,9 @@
         //init variables
         initVars();
 
+        //draw background frame
+        drawFrame_static();
+
         //boot the game itself
         //window.requestAnimationFrame(updateGamestate);
         GameClk=setInterval(updateGamestate,fps/1000);
@@ -121,10 +126,16 @@
         function sizeCanvas () {                
         if (canvasEle === undefined) {         // Check for global canvas reference
             canvasEle = createCanvas();        // Create a new canvas element
-            context = canvasEle.getContext("2d" , { alpha: false });  // Get the 2D context
+            context = canvasEle.getContext("2d");  // Get the 2D context
+
+            //create copy of canvas to contain the static drawings
+            canvasEle_static=canvasEle.insertAdjacentElement("beforebegin",canvasEle.cloneNode());
+            context2 = canvasEle_static.getContext("2d" , { alpha: false });  // Get the 2D context           
         }
         canvasEle.width  = innerWidth;         // Set the canvas resolution to fill the page
         canvasEle.height = innerHeight;
+        canvasEle_static.width  = innerWidth;         // Set the canvas resolution to fill the page
+        canvasEle_static.height = innerHeight;
         
         //also change the scaling of the drawn elements
         setScreenCoord();
@@ -328,16 +339,73 @@
 
         return false;
     }
+ 
+    //draw the static 'background' of the game
+    //this includes the actual background but also the immobile parts of the lock
+    function drawFrame_static(){          
+        //entire canvas ref frame
+        //clear the canvas
+        context2.clearRect(0,0,canvasEle.width, canvasEle.height);
+
+        //canvas background
+        context2.beginPath();
+        context2.rect(0,0,canvasEle.width, canvasEle.height);
+        context2.fillStyle="cyan";
+        context2.fill();
+
+        //game ref frame
+        context2.translate(translation_offset.x,translation_offset.y);
+        //scale the drawings
+        context2.scale(screenCoord_scale,screenCoord_scale);
+
+        context2.translate(-100, 30);
+        //draw the lock
+        //upper parts
+        context2.beginPath();
+        context2.moveTo(210,140);
+        context2.lineTo(210,70);
+        context2.bezierCurveTo(210,20,290,20,290,70);
+        context2.lineTo(290,140);
+
+        context2.strokeStyle="rgb(100, 100, 100)";
+        context2.lineWidth=2*playerRadius;
+        context2.stroke();
+        //inner circle
+        context2.beginPath();
+        context2.arc(250,230,100,0,2*Math.PI,1);
+        context2.fillStyle="rgb(135, 135, 135)";
+        context2.lineWidth=2*playerRadius;
+        context2.fill();
+
+        context2.beginPath();
+        context2.arc(250,210,20,0,2*Math.PI,1);
+        context2.fillStyle="black";
+        context2.lineWidth=2*playerRadius;
+        context2.fill();
+
+        context2.beginPath();
+        context2.rect(244,220,12,50);
+        context2.fillStyle="black";
+        context2.fill();
+
+        //central circle
+        context2.beginPath();
+        context2.arc(250,230,100,0,2*Math.PI,1);
+        context2.strokeStyle="black";
+        context2.lineWidth=2*playerRadius;
+        context2.stroke();
+
+        context2.translate(-100,0);
+
+        //reset the scale back to 1*real pixel
+        context2.scale(1/screenCoord_scale,1/screenCoord_scale);
+        context2.translate(-translation_offset.x,-translation_offset.y);  
+    }
 
     function drawFrame(){
         
         //entire canvas ref frame
         clearCanvas();
-        //canvas background
-        context.beginPath();
-        context.rect(0,0,canvasEle.width, canvasEle.height);
-        context.fillStyle="cyan";
-        context.fill();
 
         //game ref frame
         context.translate(translation_offset.x,translation_offset.y);
@@ -345,46 +413,11 @@
         context.scale(screenCoord_scale,screenCoord_scale);
 
         context.translate(-100, 30);
-        //draw the lock
-        //upper parts
-        context.beginPath();
-        context.moveTo(210,140);
-        context.lineTo(210,70);
-        context.bezierCurveTo(210,20,290,20,290,70);
-        context.lineTo(290,140);
-
-        context.strokeStyle="rgb(100, 100, 100)";
-        context.lineWidth=2*playerRadius;
-        context.stroke();
-        //inner circle
-        context.beginPath();
-        context.arc(250,230,100,0,2*Math.PI,1);
-        context.fillStyle="rgb(135, 135, 135)";
-        context.lineWidth=2*playerRadius;
-        context.fill();
-
-        context.beginPath();
-        context.arc(250,210,20,0,2*Math.PI,1);
-        context.fillStyle="black";
-        context.lineWidth=2*playerRadius;
-        context.fill();
-
-        context.beginPath();
-        context.rect(244,220,12,50);
-        context.fillStyle="black";
-        context.fill();
-
-        //central circle
-        context.beginPath();
-        context.arc(250,230,100,0,2*Math.PI,1);
-        context.strokeStyle="black";
-        context.lineWidth=2*playerRadius;
-        context.stroke();
-
         //draw the goal
         context.beginPath();
         context.arc(250,230,100,GoalPos,GoalPos+GoalSize);
         context.strokeStyle="magenta";
+        context.lineWidth=2*playerRadius;
         context.stroke();
 
         //draw the cursor
@@ -409,9 +442,9 @@
         context.stroke();*/
 
         //draw the framecounter
-        context.font="10px Arial";
+        /*context.font="10px Arial";
         context.fillStyle = "black";
-        context.fillText(GameTime,1, 11);
+        context.fillText(GameTime,1, 11);*/
 
         //draw playerangle
         /*context.font="10px Arial";
