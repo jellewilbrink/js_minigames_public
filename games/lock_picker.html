@@ -30,15 +30,19 @@
     *** collision detection (especially on mobile android) is not always accurate  
     */
 
-    const code_version="1.2";
+    const code_version="1.3";
 
-    var canvasEle=undefined;
-    var context;
+    var canvasEle=undefined; //var holding canvas
+    var context; //canvas context
+    var canvasEle_static=undefined; //var holding canvas for drawing static images
+    var context2; //static canvas context
 
     //update the frame at constant framerate
-    const fps=60;
+    const fps=60; //desired frames per second
+    var GameClk; //variable holding frame interval timer
     var GameTime=0; // gametime in frames
-    var gameClk; //variable holding timer that trigger frame refresh after set amount of time
+    var frametime={start:0.0, end:0.0, diff:function(){return this.end-this.start;}}; //start and end times of the previous frame, as well as the lenght of the frame (in ms)
+    var avg_fps=0; //average fps
 
     var waitForListener=false;
 
@@ -48,8 +52,8 @@
 
     var player_angle=0;     //angle of the player (in rad)
     var playerCoord={x:150,y:250};
-    const playerSpeed_init=0.08 * (60/fps); //initial speed of the player. Normalized at 60fps, to make it independent of set framerate
-    const playerSpeed_final=1.5*0.08 * (60/fps); //maximum (aka final) speed of the player. Normalized at 60fps, to make it independent of set framerate
+    const playerSpeed_init=0.08*60; //initial speed of the player. in rad/s
+    const playerSpeed_final=1.5*0.08*60 ; //maximum (aka final) speed of the player. in rad/s
     var playerSpeed=playerSpeed_init; //playerspeed in rad per frame
     const playerRadius=15; //radius of the player in px
     var sign=1; //the sign of the direction the player is moving in
@@ -62,6 +66,35 @@
     const default_ScreenSize={x:300, y:400}; //the for which the game animations were initially designed
     var screenCoord_scale=1.0;
     var translation_offset={x:0,y:0};
+
+    //fallbackfunction for animation frame for maximum browser compatibility
+    //change the defintion of requestAnimationFrame if the browser does not support it by default
+    //from: https://gist.github.com/paulirish/1579671
+    (function() {
+    var lastTime = 0;
+    var vendors = ['webkit', 'moz'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame =
+          window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
+
 
     window.onload = () => {
         init();
@@ -81,8 +114,12 @@
         //init variables
         initVars();
 
+        //draw background frame
+        drawFrame_static();
+
         //boot the game itself
-        gameClk = setInterval(updateGamestate,1000/fps);
+        requestAnimationFrame(updateGamestate);
+        //GameClk=setInterval(updateGamestate,1000/fps);
 
         //display the current version of the game
         console.log("Game version: " + code_version);
@@ -119,10 +156,16 @@
         function sizeCanvas () {                
         if (canvasEle === undefined) {         // Check for global canvas reference
             canvasEle = createCanvas();        // Create a new canvas element
-            context = canvasEle.getContext("2d" , { alpha: false });  // Get the 2D context
+            context = canvasEle.getContext("2d");  // Get the 2D context
+
+            //create copy of canvas to contain the static drawings
+            canvasEle_static=canvasEle.insertAdjacentElement("beforebegin",canvasEle.cloneNode());
+            context2 = canvasEle_static.getContext("2d" , { alpha: false });  // Get the 2D context           
         }
         canvasEle.width  = innerWidth;         // Set the canvas resolution to fill the page
         canvasEle.height = innerHeight;
+        canvasEle_static.width  = innerWidth;         // Set the canvas resolution to fill the page
+        canvasEle_static.height = innerHeight;
         
         //also change the scaling of the drawn elements
         setScreenCoord();
@@ -159,6 +202,10 @@
     }
 
     function updateGamestate(){
+        //measure frametime
+        frametime.start=frametime.end;
+        frametime.end=performance.now();
+
         GameTime++;
         switch(GameState){
             case "play": 
@@ -173,7 +220,15 @@
             break;
             default: console.log("ERROR: The game is not is a valid state..."); 
             break;
-        }  
+        } 
+
+        // display time between consecutive requestAnimationFrame events, also display time used to exectute the gamestate switch statement-for dubugging perposes
+        /*let drawtime=performance.now()-frametime.end;
+        if(GameTime<1000)
+        {        
+            console.log("frametime: "+frametime.diff()+ " drawtime: " + drawtime);
+        }*/
+        requestAnimationFrame(updateGamestate);
     }
 
      //declaring eventlisteners
@@ -225,7 +280,7 @@
 
     //update the position of the player
     function updatePlayer(){
-        player_angle+=sign*playerSpeed;
+        player_angle+=sign*playerSpeed*(frametime.diff()/1000);
         playerCoord.x = 250 + 100*Math.cos(-1*player_angle);
         playerCoord.y = 230 + 100*Math.sin(-1*player_angle);
     }
@@ -322,15 +377,88 @@
         return false;
     }
 
+    var prev_frametimes=[0,0,0,0,0,0,0,0,0,0];
+    //calculate the average fps based on the last 10 frames
+    //NOTE: it only works if the function is called more often than the prev_frametimes array is long. Basically you have to fill it first by calling the function a number of times.
+    function avgFPS(latest_frametime){
+        //update the frametime database array
+        prev_frametimes.shift();
+        prev_frametimes.push(latest_frametime);
+
+        //calculate average
+        var sum=0; //the average
+        for (i in prev_frametimes){
+            sum+=prev_frametimes[i];
+        }
+        return 1000/(sum/prev_frametimes.length); //return the average
+    }
+ 
+    //draw the static 'background' of the game
+    //this includes the actual background but also the immobile parts of the lock
+    function drawFrame_static(){          
+        //entire canvas ref frame
+        //clear the canvas
+        context2.clearRect(0,0,canvasEle.width, canvasEle.height);
+
+        //canvas background
+        context2.beginPath();
+        context2.rect(0,0,canvasEle.width, canvasEle.height);
+        context2.fillStyle="cyan";
+        context2.fill();
+
+        //game ref frame
+        context2.translate(translation_offset.x,translation_offset.y);
+        //scale the drawings
+        context2.scale(screenCoord_scale,screenCoord_scale);
+
+        context2.translate(-100, 30);
+        //draw the lock
+        //upper parts
+        context2.beginPath();
+        context2.moveTo(210,140);
+        context2.lineTo(210,70);
+        context2.bezierCurveTo(210,20,290,20,290,70);
+        context2.lineTo(290,140);
+
+        context2.strokeStyle="rgb(100, 100, 100)";
+        context2.lineWidth=2*playerRadius;
+        context2.stroke();
+        //inner circle
+        context2.beginPath();
+        context2.arc(250,230,100,0,2*Math.PI,1);
+        context2.fillStyle="rgb(135, 135, 135)";
+        context2.lineWidth=2*playerRadius;
+        context2.fill();
+
+        context2.beginPath();
+        context2.arc(250,210,20,0,2*Math.PI,1);
+        context2.fillStyle="black";
+        context2.lineWidth=2*playerRadius;
+        context2.fill();
+
+        context2.beginPath();
+        context2.rect(244,220,12,50);
+        context2.fillStyle="black";
+        context2.fill();
+
+        //central circle
+        context2.beginPath();
+        context2.arc(250,230,100,0,2*Math.PI,1);
+        context2.strokeStyle="black";
+        context2.lineWidth=2*playerRadius;
+        context2.stroke();
+
+        context2.translate(-100,0);
+
+        //reset the scale back to 1*real pixel
+        context2.scale(1/screenCoord_scale,1/screenCoord_scale);
+        context2.translate(-translation_offset.x,-translation_offset.y);  
+    }
+
     function drawFrame(){
         
         //entire canvas ref frame
         clearCanvas();
-        //canvas background
-        context.beginPath();
-        context.rect(0,0,canvasEle.width, canvasEle.height);
-        context.fillStyle="cyan";
-        context.fill();
 
         //game ref frame
         context.translate(translation_offset.x,translation_offset.y);
@@ -338,46 +466,11 @@
         context.scale(screenCoord_scale,screenCoord_scale);
 
         context.translate(-100, 30);
-        //draw the lock
-        //upper parts
-        context.beginPath();
-        context.moveTo(210,140);
-        context.lineTo(210,70);
-        context.bezierCurveTo(210,20,290,20,290,70);
-        context.lineTo(290,140);
-
-        context.strokeStyle="rgb(100, 100, 100)";
-        context.lineWidth=2*playerRadius;
-        context.stroke();
-        //inner circle
-        context.beginPath();
-        context.arc(250,230,100,0,2*Math.PI,1);
-        context.fillStyle="rgb(135, 135, 135)";
-        context.lineWidth=2*playerRadius;
-        context.fill();
-
-        context.beginPath();
-        context.arc(250,210,20,0,2*Math.PI,1);
-        context.fillStyle="black";
-        context.lineWidth=2*playerRadius;
-        context.fill();
-
-        context.beginPath();
-        context.rect(244,220,12,50);
-        context.fillStyle="black";
-        context.fill();
-
-        //central circle
-        context.beginPath();
-        context.arc(250,230,100,0,2*Math.PI,1);
-        context.strokeStyle="black";
-        context.lineWidth=2*playerRadius;
-        context.stroke();
-
         //draw the goal
         context.beginPath();
         context.arc(250,230,100,GoalPos,GoalPos+GoalSize);
-        context.strokeStyle="magenta";
+        context.strokeStyle="#ff00af";
+        context.lineWidth=2*playerRadius;
         context.stroke();
 
         //draw the cursor
@@ -400,6 +493,15 @@
         context.strokeStyle = "black";
         context.lineWidth=5;
         context.stroke();*/
+
+        //draw the fps counter
+        /*context.font="10px Arial";
+        context.fillStyle = "black";
+        context.fillText(avg_fps + "fps",1, 11);
+        if(!(GameTime%5)){
+            //update average fps after a number of frames
+            avg_fps= round(avgFPS(frametime.diff()),2);
+        }*/
 
         //draw the framecounter
         /*context.font="10px Arial";
