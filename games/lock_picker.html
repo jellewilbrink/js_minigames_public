@@ -38,10 +38,11 @@
     var context2; //static canvas context
 
     //update the frame at constant framerate
-    const fps=45; //desired frames per second
+    const fps=60; //desired frames per second
     var GameClk; //variable holding frame interval timer
     var GameTime=0; // gametime in frames
     var frametime={start:0.0, end:0.0, diff:function(){return this.end-this.start;}}; //start and end times of the previous frame, as well as the lenght of the frame (in ms)
+    var avg_fps=0; //average fps
 
     var waitForListener=false;
 
@@ -66,6 +67,35 @@
     var screenCoord_scale=1.0;
     var translation_offset={x:0,y:0};
 
+    //fallbackfunction for animation frame for maximum browser compatibility
+    //change the defintion of requestAnimationFrame if the browser does not support it by default
+    //from: https://gist.github.com/paulirish/1579671
+    (function() {
+    var lastTime = 0;
+    var vendors = ['webkit', 'moz'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame =
+          window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
+
+
     window.onload = () => {
         init();
     }
@@ -88,8 +118,8 @@
         drawFrame_static();
 
         //boot the game itself
-        //window.requestAnimationFrame(updateGamestate);
-        GameClk=setInterval(updateGamestate,fps/1000);
+        requestAnimationFrame(updateGamestate);
+        //GameClk=setInterval(updateGamestate,1000/fps);
 
         //display the current version of the game
         console.log("Game version: " + code_version);
@@ -191,7 +221,14 @@
             default: console.log("ERROR: The game is not is a valid state..."); 
             break;
         } 
-        //window.requestAnimationFrame(updateGamestate);
+
+        // display time between consecutive requestAnimationFrame events, also display time used to exectute the gamestate switch statement-for dubugging perposes
+        /*let drawtime=performance.now()-frametime.end;
+        if(GameTime<1000)
+        {        
+            console.log("frametime: "+frametime.diff()+ " drawtime: " + drawtime);
+        }*/
+        requestAnimationFrame(updateGamestate);
     }
 
      //declaring eventlisteners
@@ -339,6 +376,22 @@
 
         return false;
     }
+
+    var prev_frametimes=[0,0,0,0,0,0,0,0,0,0];
+    //calculate the average fps based on the last 10 frames
+    //NOTE: it only works if the function is called more often than the prev_frametimes array is long. Basically you have to fill it first by calling the function a number of times.
+    function avgFPS(latest_frametime){
+        //update the frametime database array
+        prev_frametimes.shift();
+        prev_frametimes.push(latest_frametime);
+
+        //calculate average
+        var sum=0; //the average
+        for (i in prev_frametimes){
+            sum+=prev_frametimes[i];
+        }
+        return 1000/(sum/prev_frametimes.length); //return the average
+    }
  
     //draw the static 'background' of the game
     //this includes the actual background but also the immobile parts of the lock
@@ -416,7 +469,7 @@
         //draw the goal
         context.beginPath();
         context.arc(250,230,100,GoalPos,GoalPos+GoalSize);
-        context.strokeStyle="magenta";
+        context.strokeStyle="#ff00af";
         context.lineWidth=2*playerRadius;
         context.stroke();
 
@@ -440,6 +493,15 @@
         context.strokeStyle = "black";
         context.lineWidth=5;
         context.stroke();*/
+
+        //draw the fps counter
+        /*context.font="10px Arial";
+        context.fillStyle = "black";
+        context.fillText(avg_fps + "fps",1, 11);
+        if(!(GameTime%5)){
+            //update average fps after a number of frames
+            avg_fps= round(avgFPS(frametime.diff()),2);
+        }*/
 
         //draw the framecounter
         /*context.font="10px Arial";
