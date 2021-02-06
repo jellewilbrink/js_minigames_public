@@ -10,15 +10,33 @@
     <meta name="Description" content="Arcade minigame about lock picking.">
     <meta name="keywords" content="JavaScript, game, arcade, opensource, lockpicker, pwa">
 
-    <link rel="icon" href="../resources/icons/favicon.png">
-<link rel="apple-touch-icon" href="../resources/icons/icon120_mask.png">
-<link rel="apple-touch-icon" href="../resources/icons/icon152_mask.png">
-<link rel="apple-touch-icon" href="../resources/icons/icon167_mask.png">
-<link rel="apple-touch-icon" href="../resources/icons/icon180_mask.png">
+    <link rel="icon" href="../resources/icons/favicon.ico">
+    <link rel="icon" href="../resources/icons/favicon.svg" type="image/svg+xml">
+    <link rel="mask-icon" href="../resources/icons/icon_apple_pinned_tab.svg" color="#FF961D">
+    <link rel="apple-touch-icon" href="../resources/icons/icon180_mask.png">
     <title>Lock picker game</title>
+
+    <link rel="stylesheet" href="../w3.css">
 </head>
-<body>
+<body>    
+<!--sidebar-->
+<div class="w3-col l2 m2 s4">
+    <!--include icon with link to the minigames homepage-->
+     <div style="width: 50%; position: relative;z-index:1; margin:10px;">
+         <a href="../index.html"  style="position:relative;z-index:1;"> 
+             <img src="../resources/icons/icon_transparent.svg" alt="JS minigames home" title="JS Minigames Home"
+             class="w3-circle w3-ripple hover-icon-bg" 
+             style="width:100%;height:100%;max-width:100px; border-width:2px; border-style: solid;">
+         </a>    
+     </div>
+ </div>
 </body>
+
+<style>
+.hover-icon-bg:hover{
+    background-color:#00c5d3;
+}
+</style>
 
 <script>
     /* SOME CONSTRAINTS ON THE VARIABLES:
@@ -148,8 +166,8 @@
         canvasEle.style.position = "absolute"; // Set the style 
         canvasEle.style.left     = "0px";      // Position in top left
         canvasEle.style.top      = "0px";
-        canvasEle.style.zIndex   = 1;        
-        document.body.appendChild(canvasEle);  // Add to document
+        canvasEle.style.zIndex   = 0;        
+        document.body.insertAdjacentElement("beforeend",canvasEle);  // Add to document
         return canvasEle;
     }
     // Resizes canvas. Will create a canvas if it does not exist
