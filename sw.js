@@ -12,6 +12,7 @@ const appShellFiles = [
   '/js_minigames_public/resources/icons/icon_apple_pinned_tab.svg',
   '/js_minigames_public/resources/icons/icon_transparent.svg',
   '/js_minigames_public/resources/icons/icon180_mask.png',
+  '/js_minigames_public/resources/icons/icon300_mask.png',
   '/js_minigames_public/resources/icons/icon192_mask.png',
   '/js_minigames_public/resources/icons/icon512_mask.png'
 ];
