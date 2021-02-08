@@ -265,6 +265,8 @@
                     generateGoal();
                     //increase score counter
                     score++;
+                    //display next level animation
+                    aniClick(true);
                 }
                 else{
                     //if no, game over
@@ -411,6 +413,37 @@
         return 1000/(sum/prev_frametimes.length); //return the average
     }
  
+    //set interval and opacity timing of the animation for click event
+    var is_ani=false; //whether to draw the animation or not
+    const ani_time_tot=1000.0; //total time for the animation to last
+    var ani_time_left=0.0; //time in ms left to animate
+    var ani_strength=0; // the stength of the effect
+    function aniClick(firstTime=false){
+        if(firstTime){
+            ani_time_left=ani_time_tot;
+            ani_strength+=1;
+            if(is_ani){
+                //give bonus effect for streak
+                ani_strength+=0.3;
+            }
+            is_ani=true;
+        }
+        else if(ani_time_left<0)
+        {
+            //reset
+            is_ani=false;
+            ani_time_left=ani_time_tot;
+            ani_strength=0;
+        }
+        else{
+            //make the strength go from 1 to 0 in the given time
+            ani_strength*=(ani_time_left/ani_time_tot); 
+            ani_time_left-=frametime.diff();
+            is_ani=true;
+        }
+        return;
+    }
+
     //draw the static 'background' of the game
     //this includes the actual background but also the immobile parts of the lock
     function drawFrame_static(){          
@@ -466,7 +499,7 @@
         context2.lineWidth=2*playerRadius;
         context2.stroke();
 
-        context2.translate(-100,0);
+        context2.translate(100,-30);
 
         //reset the scale back to 1*real pixel
         context2.scale(1/screenCoord_scale,1/screenCoord_scale);
@@ -474,7 +507,6 @@
     }
 
     function drawFrame(){
-        
         //entire canvas ref frame
         clearCanvas();
 
@@ -496,6 +528,25 @@
         context.arc(playerCoord.x,playerCoord.y,playerRadius,0,2*Math.PI,1);
         context.fillStyle = "rgb(0,225,0)"; //lime but to increase intensity-contrast with magenta slightly less bright
         context.fill();
+
+        //draw the keyhole (for click animation)
+        //only draw if animation is required
+        if(is_ani){
+            let shade=64;
+            let col="rgb("+ String(ani_strength*shade)+","+String(ani_strength*shade)+","+String(ani_strength*shade) +")";
+            context.beginPath();
+            context.arc(250,210,18,0,2*Math.PI,1);
+            context.fillStyle=col;
+            context.lineWidth=2*playerRadius;
+            context.fill();
+
+            context.beginPath();
+            context.rect(246,220,8,48);
+            context.fillStyle=col;
+            context.fill();
+            aniClick()
+        }
+
         context.translate(100,-30);
 
         context.translate(-100,0);
