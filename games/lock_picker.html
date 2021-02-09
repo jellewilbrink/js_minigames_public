@@ -74,12 +74,13 @@
     const playerSpeed_final=1.5*0.08*60 ; //maximum (aka final) speed of the player. in rad/s
     var playerSpeed=playerSpeed_init; //playerspeed in rad per frame
     const playerRadius=15; //radius of the player in px
-    var sign=1; //the sign of the direction the player is moving in
+    var sign=1; //the sign of the direction the player is moving in. value between 1 and -1
 
     var GoalPos=0; //lowest angle of the goal in rad
     const GoalSize_init=0.8; //inital goalsize (in rad)
     const GoalSize_final=0.35; //final goalsize (in rad)
     var GoalSize=GoalSize_init; //size of the goal in rad
+    var goal_odds=0; //the odds that the goal only moves in a single direction
 
     const default_ScreenSize={x:300, y:400}; //the for which the game animations were initially designed
     var screenCoord_scale=1.0;
@@ -152,6 +153,7 @@
         sign=1;
         GoalPos=0; //lowest angle of the goal in rad
         GoalSize=GoalSize_init; //size of the goal in rad
+        goal_odds=1-2*Math.random();
 
         //generate target
         generateGoal();
@@ -343,7 +345,7 @@
     function generateGoal(){
         let GoalPos_old=GoalPos;
         while((Math.abs(GoalPos-GoalPos_old)<GoalSize)){
-            GoalPos = GoalPos_old -0.3*Math.PI + 1*Math.PI* Math.random();
+            GoalPos = GoalPos_old -(0.5+0.2*goal_odds)*Math.PI + 1*Math.PI* Math.random();
         }
         if(GoalPos>2*Math.PI){
             GoalPos-=2*Math.PI;
@@ -415,16 +417,17 @@
  
     //set interval and opacity timing of the animation for click event
     var is_ani=false; //whether to draw the animation or not
-    const ani_time_tot=1000.0; //total time for the animation to last
+    const ani_time_tot=300.0; //total time for the animation to last
     var ani_time_left=0.0; //time in ms left to animate
     var ani_strength=0; // the stength of the effect
+    var ani_strength_init=1;
     function aniClick(firstTime=false){
         if(firstTime){
             ani_time_left=ani_time_tot;
-            ani_strength+=1;
+            ani_strength_init=1;
             if(is_ani){
                 //give bonus effect for streak
-                ani_strength+=0.3;
+                ani_strength_init+=0.3;
             }
             is_ani=true;
         }
@@ -437,7 +440,7 @@
         }
         else{
             //make the strength go from 1 to 0 in the given time
-            ani_strength*=(ani_time_left/ani_time_tot); 
+            ani_strength=ani_strength_init*(ani_time_left/ani_time_tot); 
             ani_time_left-=frametime.diff();
             is_ani=true;
         }
@@ -532,17 +535,20 @@
         //draw the keyhole (for click animation)
         //only draw if animation is required
         if(is_ani){
-            let shade=64;
-            let col="rgb("+ String(ani_strength*shade)+","+String(ani_strength*shade)+","+String(ani_strength*shade) +")";
+            let tot_shift=3; //total shift of shape border in px
+            let shift=(ani_strength*(tot_shift+1))-1; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
+            //if(shift<0){
+              //  shift=-2; //make the overlay shap smaller to make the disappearance anti-aliasing invisible
+            //}
             context.beginPath();
-            context.arc(250,210,18,0,2*Math.PI,1);
-            context.fillStyle=col;
+            context.arc(250,210,20+shift,0,2*Math.PI,1);
+            context.fillStyle="black";
             context.lineWidth=2*playerRadius;
             context.fill();
 
             context.beginPath();
-            context.rect(246,220,8,48);
-            context.fillStyle=col;
+            context.rect(244-shift,220,12+(2*shift),50+shift);
+            context.fillStyle="black";
             context.fill();
             aniClick()
         }
