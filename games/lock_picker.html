@@ -3,10 +3,11 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#00c5d3"/>
+    <meta name="theme-color" content="#00c5d3" />
     <meta name="Description" content="Arcade minigame about lock picking.">
     <meta name="keywords" content="JavaScript, game, arcade, opensource, lockpicker, pwa">
 
@@ -18,109 +19,295 @@
 
     <link rel="stylesheet" href="../w3.css">
 </head>
-<body>    
-<!--sidebar-->
-<div class="w3-col l2 m2 s4">
-    <!--include icon with link to the minigames homepage-->
-     <div style="width: 50%; position: relative;z-index:1; margin:10px;">
-         <a href="../index.html"  style="position:relative;z-index:1;"> 
-             <img src="../resources/icons/icon_transparent.svg" alt="JS minigames home" title="JS Minigames Home"
-             class="w3-circle w3-ripple hover-icon-bg" 
-             style="width:100%;height:100%;max-width:100px; border-width:2px; border-style: solid;">
-         </a>    
-     </div>
- </div>
+
+<body>
+    <noscript>Your browser does not have JavaScript enabled or does not support it. If you want to play the game, please
+        try changing the browser settings or use a different browser.</noscript>
+    <!--sidebar-->
+    <div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
+        <button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
+        <form class="w3-container w3-card-4" id="optionsform">
+            <h2>Options</h2>
+            <p>
+                <input class="w3-check" type="checkbox" autocomplete="off" id="cb1">
+                <label>Colorblind mode</label></p>
+            <input class="w3-check" type="checkbox" autocomplete="off" id="cb2">
+            <label>Dark mode</label></p>
+        </form>
+    </div>
+
+    <div class="w3-row" id="ui-btn">
+        <div class="w3-col l2 m2 s4" style="margin-left:10px; margin-top:10px;">
+            <!--include icon with link to the minigames homepage-->
+            <div style="width:46%; max-width:100px; position: relative;z-index:1; padding:2%;" class="w3-col s6">
+                <a href="../index.html" style="position:relative;z-index:1;">
+                    <img src="../resources/icons/icon_transparent.svg" alt="JS minigames home" title="JS Minigames Home"
+                        class="w3-circle w3-ripple hover-icon-bg"
+                        style="width:100%;height:100%;max-width:100px; border-width:2px; border-style: solid;">
+                </a>
+            </div>
+            <div style="width:46%; max-width:100px; position: relative;z-index:2; padding:2%;" class="w3-col s6">
+                <!--<object data="../resources/settings.svg" type="image/svg+xml" style="width:100%;height:100%;" ></object>-->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-settings icon" id="settings_btn">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
+                    <style>
+                        .icon {
+                            stroke: rgb(100, 100, 100) !important;
+                            width: 100%;
+                            height: 100%;
+                        }
+
+                        .icon:hover {
+                            stroke: rgb(135, 125, 135) !important;
+                        }
+                    </style>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!--cookie consent prompt-->
+    <div id="cookieprompt" class="w3-modal">
+        <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+            <header class="w3-container">
+                <h2>Cookie consent</h2>
+            </header>
+
+            <div class="w3-container">
+                <p>This page wants to use cookies.</p>
+                <p>The cookies are only used for the game to remember your personal settings.</p>
+                <p>Do you allow cookies?</p>
+            </div>
+
+            <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                <button
+                    onclick="document.getElementById('cookieprompt').style.display='none';setCookie('cookie_allowed',true,1800);"
+                    type="button" class="w3-button w3-grey w3-ripple">Yes</button>
+                <button onclick="document.getElementById('cookieprompt').style.display='none'" type="button"
+                    class="w3-button w3-grey w3-ripple">No</button>
+            </div>
+
+        </div>
+    </div>
+    </div>
 </body>
 
 <style>
-.hover-icon-bg:hover{
-    background-color:#00c5d3;
-}
+    .hover-icon-bg:hover {
+        background-color: #00c5d3;
+    }
 </style>
 
 <script>
+    function w3_open() {
+        document.getElementById("ui-btn").style.display = "none";
+        document.getElementById("mySidebar").style.width = "100%";
+        document.getElementById("mySidebar").style.display = "block";
+
+        //load saved cookie settings if consent was already given
+        loadCookieSettings();
+        //ask cookie consent if not yet given 
+        askCookiePermission();
+    }
+
+    function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("ui-btn").style.display = "block";
+    }
+
+    var is_colorblind = false;
+    var is_darkmode = false;
+
+    function handleOptions() {
+        //check the selected options
+        is_colorblind = document.getElementById("cb1").checked;
+        is_darkmode = document.getElementById("cb2").checked;
+        if (is_colorblind) {
+            //set colorblind settings
+            thickness_lockring = 0.5 * playerRadius; //the tickness of the outer lock ring in px
+            thickness_goal = playerRadius; //the tickness of the goal in px
+            col.bg = "white";
+            col.lock.inner = col.bg;
+            col.player = "#0000bb";
+            col.target = "#FF8000";
+
+            document.getElementById("cb2").disabled = true;
+            is_darkmode = false;
+        } else if (is_darkmode) {
+            //set darkmode settings
+            col = {
+                lock: {
+                    outer: "#555",
+                    inner: "#020826",
+                    upper: "#777",
+                    keyhole: "#777"
+                },
+                bg: "#040420", // color of the background
+                player: "rgb(0,225,0)",
+                target: "#ff00af"
+            }
+            document.getElementsByClassName("hover-icon-bg")[0].style.borderColor = "white";
+
+            is_colorblind = false;
+            document.getElementById("cb1").disabled = true;
+        } else {
+            //set default settings
+            thickness_lockring = 2 * playerRadius; //the tickness of the outer lock ring in px
+            thickness_goal = 2 * playerRadius; //the tickness of the goal in px
+            col = {
+                lock: {
+                    outer: "black",
+                    inner: "rgb(135,135,135)",
+                    upper: "rgb(100,100,100)",
+                    keyhole: "black"
+                },
+                bg: "cyan", // color of the background
+                player: "rgb(0,225,0)",
+                target: "#ff00af"
+            }
+            document.getElementsByClassName("hover-icon-bg")[0].style.borderColor = "black";
+
+            document.getElementById("cb1").disabled = false;
+            document.getElementById("cb2").disabled = false;
+        }
+        //save the new settings into cookies
+        if (is_cookie_allowed) {
+            setCookie("is_colorblind", is_colorblind, 1800);
+            setCookie("is_darkmode", is_darkmode, 1800);
+        }
+        //implement the new options
+        init();
+    }
+
     /* SOME CONSTRAINTS ON THE VARIABLES:
-    *** Goalsize must be greater than player diameter, else collision detection may fail
-    *** The Goalsize should also not be too large because otherwise the generation loaction constraints may never be met, crashing the game
-    */
+     *** Goalsize must be greater than player diameter, else collision detection may fail
+     *** The Goalsize should also not be too large because otherwise the generation loaction constraints may never be met, crashing the game
+     */
 
     /*  KNOWN ISSUES TO BE FIXED:
-    *** collision detection (especially on mobile android) is not always accurate  
-    */
+     *** collision detection (especially on mobile android) is not always accurate  
+     */
 
-    const code_version="1.3";
+    const code_version = "1.3";
 
-    var canvasEle=undefined; //var holding canvas
+    var is_cookie_allowed = false;
+
+    //define the colors to use in one place
+    var col = {
+        lock: {
+            outer: "black",
+            inner: "rgb(135,135,135)",
+            upper: "rgb(100,100,100)",
+            keyhole: "black"
+        },
+        bg: "cyan", // color of the background
+        player: "rgb(0,225,0)",
+        target: "#ff00af"
+    }
+
+    var canvasEle = undefined; //var holding canvas
     var context; //canvas context
-    var canvasEle_static=undefined; //var holding canvas for drawing static images
+    var canvasEle_static = undefined; //var holding canvas for drawing static images
     var context2; //static canvas context
 
     //update the frame at constant framerate
-    const fps=60; //desired frames per second
+    const fps = 60; //desired frames per second
     var GameClk; //variable holding frame interval timer
-    var GameTime=0; // gametime in frames
-    var frametime={start:0.0, end:0.0, diff:function(){return this.end-this.start;}}; //start and end times of the previous frame, as well as the lenght of the frame (in ms)
-    var avg_fps=0; //average fps
+    var GameTime = 0; // gametime in frames
+    var frametime = {
+        start: 0.0,
+        end: 0.0,
+        diff: function () {
+            return this.end - this.start;
+        }
+    }; //start and end times of the previous frame, as well as the lenght of the frame (in ms)
+    var avg_fps = 0; //average fps
 
-    var waitForListener=false;
+    var waitForListener = false;
 
-    var GameState="play";// current state of the game. list of states: play, gameover
+    var GameState = "play"; // current state of the game. list of states: play, gameover
 
-    var score=0; //number of hits the player made
+    var score = 0; //number of hits the player made
 
-    var player_angle=0;     //angle of the player (in rad)
-    var playerCoord={x:150,y:250};
-    const playerSpeed_init=0.08*60; //initial speed of the player. in rad/s
-    const playerSpeed_final=1.5*0.08*60 ; //maximum (aka final) speed of the player. in rad/s
-    var playerSpeed=playerSpeed_init; //playerspeed in rad per frame
-    const playerRadius=15; //radius of the player in px
-    var sign=1; //the sign of the direction the player is moving in. value between 1 and -1
+    var player_angle = 0; //angle of the player (in rad)
+    var playerCoord = {
+        x: 150,
+        y: 250
+    };
+    const playerSpeed_init = 0.08 * 60; //initial speed of the player. in rad/s
+    const playerSpeed_final = 1.5 * 0.08 * 60; //maximum (aka final) speed of the player. in rad/s
+    var playerSpeed = playerSpeed_init; //playerspeed in rad per frame
+    const playerRadius = 15; //radius of the player in px
+    var sign = 1; //the sign of the direction the player is moving in. value between 1 and -1
 
-    var GoalPos=0; //lowest angle of the goal in rad
-    const GoalSize_init=0.8; //inital goalsize (in rad)
-    const GoalSize_final=0.35; //final goalsize (in rad)
-    var GoalSize=GoalSize_init; //size of the goal in rad
-    var goal_odds=0; //the odds that the goal only moves in a single direction
+    var thickness_lockring = 2 * playerRadius; //the tickness of the outer lock ring in px
+    var thickness_goal = 2 * playerRadius; //the tickness of the goal in px
 
-    const default_ScreenSize={x:300, y:400}; //the for which the game animations were initially designed
-    var screenCoord_scale=1.0;
-    var translation_offset={x:0,y:0};
+    var GoalPos = 0; //lowest angle of the goal in rad
+    const GoalSize_init = 0.8; //inital goalsize (in rad)
+    const GoalSize_final = 0.35; //final goalsize (in rad)
+    var GoalSize = GoalSize_init; //size of the goal in rad
+    var goal_odds = 0; //the odds that the goal only moves in a single direction
+
+    const default_ScreenSize = {
+        x: 300,
+        y: 400
+    }; //the for which the game animations were initially designed
+    var screenCoord_scale = 1.0;
+    var translation_offset = {
+        x: 0,
+        y: 0
+    };
 
     //fallbackfunction for animation frame for maximum browser compatibility
     //change the defintion of requestAnimationFrame if the browser does not support it by default
     //from: https://gist.github.com/paulirish/1579671
-    (function() {
-    var lastTime = 0;
-    var vendors = ['webkit', 'moz'];
-    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame =
-          window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
-    }
+    (function () {
+        var lastTime = 0;
+        var vendors = ['webkit', 'moz'];
+        for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+            window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+            window.cancelAnimationFrame =
+                window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+        }
 
-    if (!window.requestAnimationFrame)
-        window.requestAnimationFrame = function(callback, element) {
-            var currTime = new Date().getTime();
-            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
-              timeToCall);
-            lastTime = currTime + timeToCall;
-            return id;
-        };
+        if (!window.requestAnimationFrame)
+            window.requestAnimationFrame = function (callback, element) {
+                var currTime = new Date().getTime();
+                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+                var id = window.setTimeout(function () {
+                        callback(currTime + timeToCall);
+                    },
+                    timeToCall);
+                lastTime = currTime + timeToCall;
+                return id;
+            };
 
-    if (!window.cancelAnimationFrame)
-        window.cancelAnimationFrame = function(id) {
-            clearTimeout(id);
-        };
-}());
+        if (!window.cancelAnimationFrame)
+            window.cancelAnimationFrame = function (id) {
+                clearTimeout(id);
+            };
+    }());
 
 
     window.onload = () => {
+        document.getElementById("settings_btn").addEventListener("click", w3_open);
+        document.getElementById("optionsform").addEventListener("click", handleOptions);
+
+        //apply saved settings from cookies (if applicable)
+        loadCookieSettings();
+        handleOptions();
+
         init();
     }
 
     //initialize the game after loading the script
-    function init(){
+    function init() {
         //generate fullscreen canvas
         sizeCanvas();
 
@@ -145,15 +332,15 @@
     }
 
     //set all game variabes to their initial state, so that the game can start over again
-    function initVars(){
-        GameState="play";
-        score=0;
-        player_angle=0;
-        playerSpeed=playerSpeed_init;
-        sign=1;
-        GoalPos=0; //lowest angle of the goal in rad
-        GoalSize=GoalSize_init; //size of the goal in rad
-        goal_odds=1-2*Math.random();
+    function initVars() {
+        GameState = "play";
+        score = 0;
+        player_angle = 0;
+        playerSpeed = playerSpeed_init;
+        sign = 1;
+        GoalPos = 0; //lowest angle of the goal in rad
+        GoalSize = GoalSize_init; //size of the goal in rad
+        goal_odds = 1 - 2 * Math.random();
 
         //generate target
         generateGoal();
@@ -163,84 +350,92 @@
     //full screen and resizing canvas: https://riptutorial.com/html5-canvas/example/7516/creating-a-responsive-full-page-canvas
 
     // Creates a canvas
-    function createCanvas () {                
-        const canvasEle = document.createElement("canvas"); 
+    function createCanvas() {
+        const canvasEle = document.createElement("canvas");
         canvasEle.style.position = "absolute"; // Set the style 
-        canvasEle.style.left     = "0px";      // Position in top left
-        canvasEle.style.top      = "0px";
-        canvasEle.style.zIndex   = 0;        
-        document.body.insertAdjacentElement("beforeend",canvasEle);  // Add to document
+        canvasEle.style.left = "0px"; // Position in top left
+        canvasEle.style.top = "0px";
+        canvasEle.style.zIndex = 0;
+        document.body.insertAdjacentElement("beforeend", canvasEle); // Add to document
         return canvasEle;
     }
     // Resizes canvas. Will create a canvas if it does not exist
-        function sizeCanvas () {                
-        if (canvasEle === undefined) {         // Check for global canvas reference
-            canvasEle = createCanvas();        // Create a new canvas element
-            context = canvasEle.getContext("2d");  // Get the 2D context
+    function sizeCanvas() {
+        if (canvasEle === undefined) { // Check for global canvas reference
+            canvasEle = createCanvas(); // Create a new canvas element
+            context = canvasEle.getContext("2d"); // Get the 2D context
 
             //create copy of canvas to contain the static drawings
-            canvasEle_static=canvasEle.insertAdjacentElement("beforebegin",canvasEle.cloneNode());
-            context2 = canvasEle_static.getContext("2d" , { alpha: false });  // Get the 2D context           
+            canvasEle_static = canvasEle.insertAdjacentElement("beforebegin", canvasEle.cloneNode());
+            context2 = canvasEle_static.getContext("2d", {
+                alpha: false
+            }); // Get the 2D context           
         }
-        canvasEle.width  = innerWidth;         // Set the canvas resolution to fill the page
+        canvasEle.width = innerWidth; // Set the canvas resolution to fill the page
         canvasEle.height = innerHeight;
-        canvasEle_static.width  = innerWidth;         // Set the canvas resolution to fill the page
+        canvasEle_static.width = innerWidth; // Set the canvas resolution to fill the page
         canvasEle_static.height = innerHeight;
-        
+
         //also change the scaling of the drawn elements
         setScreenCoord();
         setWindowTranslation();
     }
     //initialize the screen coordinates based on the screensize
-    function setScreenCoord(){
+    function setScreenCoord() {
         //set the scaling factor to the smaller of the x and y scaling factors
-        var scale = canvasEle.width/default_ScreenSize.x;
+        var scale = canvasEle.width / default_ScreenSize.x;
 
-        if(canvasEle.height/default_ScreenSize.y < scale){
-            scale=canvasEle.height/default_ScreenSize.y;
+        if (canvasEle.height / default_ScreenSize.y < scale) {
+            scale = canvasEle.height / default_ScreenSize.y;
         }
 
-        scale=floor(scale, 1);
+        scale = floor(scale, 1);
 
         //apply minimum scale
-        if(scale<0.4){
-            scale=0.4;
+        if (scale < 0.4) {
+            scale = 0.4;
         }
 
         //set the global variable to its new value
-        screenCoord_scale=scale;
+        screenCoord_scale = scale;
     }
 
     //translate the window such that it is centered
-    function setWindowTranslation(){
-        translation_offset.x=(canvasEle.width-(default_ScreenSize.x)*screenCoord_scale)/2;
-        translation_offset.y=(canvasEle.height-(default_ScreenSize.y)*screenCoord_scale)/2;
-    }
-    
-    function ToScreenCoord(x,y){
-        return {x: x*screenCoord_scale,y: y*screenCoord_scale};
+    function setWindowTranslation() {
+        translation_offset.x = (canvasEle.width - (default_ScreenSize.x) * screenCoord_scale) / 2;
+        translation_offset.y = (canvasEle.height - (default_ScreenSize.y) * screenCoord_scale) / 2;
     }
 
-    function updateGamestate(){
+    function ToScreenCoord(x, y) {
+        return {
+            x: x * screenCoord_scale,
+            y: y * screenCoord_scale
+        };
+    }
+
+    function updateGamestate() {
         //measure frametime
-        frametime.start=frametime.end;
-        frametime.end=performance.now();
+        frametime.start = frametime.end;
+        frametime.end = performance.now();
 
         GameTime++;
-        switch(GameState){
-            case "play": 
-                if(!waitForListener){
+        switch (GameState) {
+            case "play":
+                if (!waitForListener) {
                     //only change player coordinates if there is no collision detection running for the current set of coordinates
                     updatePlayer();
                 }
-                drawFrame();
-            break;
-            case "gameover": 
+                if (!(GameTime % 2) || !is_colorblind) {
+                    drawFrame();
+                }
+                break;
+            case "gameover":
                 drawFrame_Gameover();
-            break;
-            default: console.log("ERROR: The game is not is a valid state..."); 
-            break;
-        } 
+                break;
+            default:
+                console.log("ERROR: The game is not is a valid state...");
+                break;
+        }
 
         // display time between consecutive requestAnimationFrame events, also display time used to exectute the gamestate switch statement-for dubugging perposes
         /*let drawtime=performance.now()-frametime.end;
@@ -251,15 +446,15 @@
         requestAnimationFrame(updateGamestate);
     }
 
-     //declaring eventlisteners
-     const mouseDownListener = (event)=>{
-        waitForListener=true;
-        switch(GameState){
-            case "play": 
+    //declaring eventlisteners
+    const mouseDownListener = (event) => {
+        waitForListener = true;
+        switch (GameState) {
+            case "play":
                 //check whether it was a hit
-                if(isCollision()){
+                if (isCollision()) {
                     //if yes, change the sign
-                    sign*=-1;
+                    sign *= -1;
 
                     //increase difficulty to play
                     nextLevel();
@@ -269,126 +464,126 @@
                     score++;
                     //display next level animation
                     aniClick(true);
-                }
-                else{
+                } else {
                     //if no, game over
-                    GameState="gameover";
-                 }
+                    GameState = "gameover";
+                }
                 break;
-            case "gameover": 
+            case "gameover":
                 //restart the game
                 initVars();
-            break;
-            default: console.log("ERROR: The game is not is a valid state..."); 
-            break;
-        }      
+                break;
+            default:
+                console.log("ERROR: The game is not is a valid state...");
+                break;
+        }
         event.preventDefault();
-        waitForListener=false;
+        waitForListener = false;
     }
-    
+
     //calculate coordinates relative to canvas
-    const getClientOffset = (event)=>{
-        const {pageX, pageY}=event.touches ? event.touches[0]:event;
-        
-        const y=pageY-canvasEle.offsetTop;
-        const x=pageX-canvasEle.offsetLeft;
+    const getClientOffset = (event) => {
+        const {
+            pageX,
+            pageY
+        } = event.touches ? event.touches[0] : event;
 
-        return {x,y};
+        const y = pageY - canvasEle.offsetTop;
+        const x = pageX - canvasEle.offsetLeft;
+
+        return {
+            x,
+            y
+        };
     }
 
-    const clearCanvas = ()=>{
-        context.clearRect(0,0,canvasEle.width, canvasEle.height);
-    }    
+    const clearCanvas = () => {
+        context.clearRect(0, 0, canvasEle.width, canvasEle.height);
+    }
 
     //update the position of the player
-    function updatePlayer(){
-        player_angle+=sign*playerSpeed*(frametime.diff()/1000);
-        playerCoord.x = 250 + 100*Math.cos(-1*player_angle);
-        playerCoord.y = 230 + 100*Math.sin(-1*player_angle);
+    function updatePlayer() {
+        player_angle += sign * playerSpeed * (frametime.diff() / 1000);
+        playerCoord.x = 250 + 100 * Math.cos(-1 * player_angle);
+        playerCoord.y = 230 + 100 * Math.sin(-1 * player_angle);
     }
 
     //increase the game's difficulty to match the higher level
-    function nextLevel(){
+    function nextLevel() {
         //decrease goal size
-        const numSteps_goal=30; //number of steps goalsize take to reach final value
-        const numSteps_speed=30; //number of steps (aka levels) to take between initial and maximum player speed
+        const numSteps_goal = 42; //number of steps goalsize take to reach final value
+        const numSteps_speed = 42 + 19; //number of steps (aka levels) to take between initial and maximum player speed
 
         //decrease goalsize
         //only start increasing difficulty after some level is reached  
-        if(score>1){
+        if (score > 1) {
             //only decrease until the final value is reached
-            if(GoalSize>GoalSize_final)
-            {
-                GoalSize+= (GoalSize_final - GoalSize_init) /numSteps_goal;
-            }
-            else{
-                GoalSize=GoalSize_final;
+            if (GoalSize > GoalSize_final) {
+                GoalSize += (GoalSize_final - GoalSize_init) / numSteps_goal;
+            } else {
+                GoalSize = GoalSize_final;
             }
         }
 
         //increase playerspeed
         //only start increasing difficulty after some level is reached      
-        if(score>numSteps_goal - (numSteps_speed/4))
-        {
+        if (score > numSteps_goal - (numSteps_speed / 4)) {
             //only increase until the maximum value is reached
-            if(playerSpeed<playerSpeed_final)
-            {
-                playerSpeed+= (playerSpeed_final - playerSpeed_init) /numSteps_speed;
-            }
-            else{
-                playerSpeed=playerSpeed_final;
+            if (playerSpeed < playerSpeed_final) {
+                playerSpeed += (playerSpeed_final - playerSpeed_init) / numSteps_speed;
+            } else {
+                playerSpeed = playerSpeed_final;
             }
         }
     }
 
     //generate new position for the goal
-    function generateGoal(){
-        let GoalPos_old=GoalPos;
-        while((Math.abs(GoalPos-GoalPos_old)<GoalSize)){
-            GoalPos = GoalPos_old -(0.5+0.2*goal_odds)*Math.PI + 1*Math.PI* Math.random();
+    function generateGoal() {
+        let GoalPos_old = GoalPos;
+        while ((Math.abs(GoalPos - GoalPos_old) < GoalSize)) {
+            GoalPos = GoalPos_old - (0.5 + 0.2 * goal_odds + 0.1 * sign) * Math.PI + 1 * Math.PI * Math.random();
+            //bias 0.1*sign to increas the chance that the player won't have to go round the entire lock, because traget spawns in his moving direction
         }
-        if(GoalPos>2*Math.PI){
-            GoalPos-=2*Math.PI;
+        if (GoalPos > 2 * Math.PI) {
+            GoalPos -= 2 * Math.PI;
         }
-        if(GoalPos<0){
-            GoalPos+=2*Math.PI;
+        if (GoalPos < 0) {
+            GoalPos += 2 * Math.PI;
         }
-        if(GoalPos+GoalSize>2*Math.PI){
-            GoalPos-=GoalSize;
+        if (GoalPos + GoalSize > 2 * Math.PI) {
+            GoalPos -= GoalSize;
         }
     }
 
     //checks for collision between player and goal
-    function isCollision(){
+    function isCollision() {
         //calculate players angles
-        var Angle_player_center=player_angle%(2*Math.PI);
-        if(Angle_player_center>0){        
-            Angle_player_center = -1*(Angle_player_center-(2*Math.PI));
-        }        else{
-            Angle_player_center *=-1;
+        var Angle_player_center = player_angle % (2 * Math.PI);
+        if (Angle_player_center > 0) {
+            Angle_player_center = -1 * (Angle_player_center - (2 * Math.PI));
+        } else {
+            Angle_player_center *= -1;
         }
 
-        var Angle_player_upper=Angle_player_center + Math.asin(playerRadius/100);
-        var Angle_player_lower=Angle_player_center - Math.asin(playerRadius/100);
+        var Angle_player_upper = Angle_player_center + Math.asin(playerRadius / 100);
+        var Angle_player_lower = Angle_player_center - Math.asin(playerRadius / 100);
 
-        var GoalPos_upper=GoalPos+GoalSize;
+        var GoalPos_upper = GoalPos + GoalSize;
 
-        if((Angle_player_upper>=GoalPos) &&(Angle_player_upper<=GoalPos_upper))
-        {
+        if ((Angle_player_upper >= GoalPos) && (Angle_player_upper <= GoalPos_upper)) {
             return true;
         }
-        if((Angle_player_lower>=GoalPos) &&(Angle_player_lower<=GoalPos_upper))
-        {
+        if ((Angle_player_lower >= GoalPos) && (Angle_player_lower <= GoalPos_upper)) {
             return true;
         }
 
         //display angles (for debugging purposes)
-       /*console.log("player angle center: "+Angle_player_center);
-        console.log("player angle upper: "+Angle_player_upper);
-        console.log("player angle lower: "+Angle_player_lower);
-        console.log("goal angle: "+GoalPos);
-        var temp=GoalPos+GoalSize;
-        console.log("goal angle upper: "+temp);*/
+        /*console.log("player angle center: "+Angle_player_center);
+         console.log("player angle upper: "+Angle_player_upper);
+         console.log("player angle lower: "+Angle_player_lower);
+         console.log("goal angle: "+GoalPos);
+         var temp=GoalPos+GoalSize;
+         console.log("goal angle upper: "+temp);*/
 
         //draw angle from zero to center (for debugging purposes)
         /*context.beginPath();
@@ -399,168 +594,167 @@
         return false;
     }
 
-    var prev_frametimes=[0,0,0,0,0,0,0,0,0,0];
+    var prev_frametimes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     //calculate the average fps based on the last 10 frames
     //NOTE: it only works if the function is called more often than the prev_frametimes array is long. Basically you have to fill it first by calling the function a number of times.
-    function avgFPS(latest_frametime){
+    function avgFPS(latest_frametime) {
         //update the frametime database array
         prev_frametimes.shift();
         prev_frametimes.push(latest_frametime);
 
         //calculate average
-        var sum=0; //the average
-        for (i in prev_frametimes){
-            sum+=prev_frametimes[i];
+        var sum = 0; //the average
+        for (i in prev_frametimes) {
+            sum += prev_frametimes[i];
         }
-        return 1000/(sum/prev_frametimes.length); //return the average
+        return 1000 / (sum / prev_frametimes.length); //return the average
     }
- 
+
     //set interval and opacity timing of the animation for click event
-    var is_ani=false; //whether to draw the animation or not
-    const ani_time_tot=300.0; //total time for the animation to last
-    var ani_time_left=0.0; //time in ms left to animate
-    var ani_strength=0; // the stength of the effect
-    var ani_strength_init=1;
-    function aniClick(firstTime=false){
-        if(firstTime){
-            ani_time_left=ani_time_tot;
-            ani_strength_init=1;
-            if(is_ani){
+    var is_ani = false; //whether to draw the animation or not
+    const ani_time_tot = 400.0; //total time for the animation to last
+    var ani_time_left = 0.0; //time in ms left to animate
+    var ani_strength = 0; // the stength of the effect
+    var ani_strength_init = 1;
+
+    function aniClick(firstTime = false) {
+        if (firstTime) {
+            ani_time_left = ani_time_tot;
+            ani_strength_init = 1;
+            if (is_ani) {
                 //give bonus effect for streak
-                ani_strength_init+=0.3;
+                ani_strength_init += 0.3;
             }
-            is_ani=true;
-        }
-        else if(ani_time_left<0)
-        {
+            is_ani = true;
+        } else if (ani_time_left < 0) {
             //reset
-            is_ani=false;
-            ani_time_left=ani_time_tot;
-            ani_strength=0;
-        }
-        else{
+            is_ani = false;
+            ani_time_left = ani_time_tot;
+            ani_strength = 0;
+        } else {
             //make the strength go from 1 to 0 in the given time
-            ani_strength=ani_strength_init*(ani_time_left/ani_time_tot); 
-            ani_time_left-=frametime.diff();
-            is_ani=true;
+            ani_strength = ani_strength_init * (ani_time_left / ani_time_tot);
+            ani_time_left -= frametime.diff();
+            is_ani = true;
         }
         return;
     }
 
     //draw the static 'background' of the game
     //this includes the actual background but also the immobile parts of the lock
-    function drawFrame_static(){          
+    function drawFrame_static() {
         //entire canvas ref frame
         //clear the canvas
-        context2.clearRect(0,0,canvasEle.width, canvasEle.height);
+        context2.clearRect(0, 0, canvasEle.width, canvasEle.height);
 
         //canvas background
         context2.beginPath();
-        context2.rect(0,0,canvasEle.width, canvasEle.height);
-        context2.fillStyle="cyan";
+        context2.rect(0, 0, canvasEle.width, canvasEle.height);
+        context2.fillStyle = col.bg;
         context2.fill();
 
         //game ref frame
-        context2.translate(translation_offset.x,translation_offset.y);
+        context2.translate(translation_offset.x, translation_offset.y);
         //scale the drawings
-        context2.scale(screenCoord_scale,screenCoord_scale);
+        context2.scale(screenCoord_scale, screenCoord_scale);
 
         context2.translate(-100, 30);
         //draw the lock
         //upper parts
         context2.beginPath();
-        context2.moveTo(210,140);
-        context2.lineTo(210,70);
-        context2.bezierCurveTo(210,20,290,20,290,70);
-        context2.lineTo(290,140);
+        context2.moveTo(210, 140);
+        context2.lineTo(210, 70);
+        context2.bezierCurveTo(210, 20, 290, 20, 290, 70);
+        context2.lineTo(290, 140);
 
-        context2.strokeStyle="rgb(100, 100, 100)";
-        context2.lineWidth=2*playerRadius;
+        context2.strokeStyle = col.lock.upper;
+        context2.lineWidth = thickness_lockring;
         context2.stroke();
         //inner circle
         context2.beginPath();
-        context2.arc(250,230,100,0,2*Math.PI,1);
-        context2.fillStyle="rgb(135, 135, 135)";
-        context2.lineWidth=2*playerRadius;
+        context2.arc(250, 230, 100, 0, 2 * Math.PI, 1);
+        context2.fillStyle = col.lock.inner;
+        context2.lineWidth = 2 * playerRadius;
         context2.fill();
 
         context2.beginPath();
-        context2.arc(250,210,20,0,2*Math.PI,1);
-        context2.fillStyle="black";
-        context2.lineWidth=2*playerRadius;
+        context2.arc(250, 210, 20, 0, 2 * Math.PI, 1);
+        context2.fillStyle = col.lock.keyhole;
+        context2.lineWidth = 2 * playerRadius;
         context2.fill();
 
         context2.beginPath();
-        context2.rect(244,220,12,50);
-        context2.fillStyle="black";
+        context2.rect(244, 220, 12, 50);
+        context2.fillStyle = col.lock.keyhole;
         context2.fill();
 
-        //central circle
+        //outer circle
         context2.beginPath();
-        context2.arc(250,230,100,0,2*Math.PI,1);
-        context2.strokeStyle="black";
-        context2.lineWidth=2*playerRadius;
+        context2.arc(250, 230, 100, 0, 2 * Math.PI, 1);
+        context2.strokeStyle = col.lock.outer;
+        context2.lineWidth = thickness_lockring;
         context2.stroke();
 
-        context2.translate(100,-30);
+        context2.translate(100, -30);
 
         //reset the scale back to 1*real pixel
-        context2.scale(1/screenCoord_scale,1/screenCoord_scale);
-        context2.translate(-translation_offset.x,-translation_offset.y);  
+        context2.scale(1 / screenCoord_scale, 1 / screenCoord_scale);
+        context2.translate(-translation_offset.x, -translation_offset.y);
     }
 
-    function drawFrame(){
+    function drawFrame() {
         //entire canvas ref frame
         clearCanvas();
 
         //game ref frame
-        context.translate(translation_offset.x,translation_offset.y);
+        context.translate(translation_offset.x, translation_offset.y);
         //scale the drawings
-        context.scale(screenCoord_scale,screenCoord_scale);
+        context.scale(screenCoord_scale, screenCoord_scale);
 
         context.translate(-100, 30);
         //draw the goal
         context.beginPath();
-        context.arc(250,230,100,GoalPos,GoalPos+GoalSize);
-        context.strokeStyle="#ff00af";
-        context.lineWidth=2*playerRadius;
+        context.arc(250, 230, 100, GoalPos, GoalPos + GoalSize);
+        context.strokeStyle = col.target;
+        context.lineWidth = thickness_goal;
         context.stroke();
 
         //draw the cursor
         context.beginPath();
-        context.arc(playerCoord.x,playerCoord.y,playerRadius,0,2*Math.PI,1);
-        context.fillStyle = "rgb(0,225,0)"; //lime but to increase intensity-contrast with magenta slightly less bright
+        context.arc(playerCoord.x, playerCoord.y, playerRadius, 0, 2 * Math.PI, 1);
+        context.fillStyle = col.player; //lime but to increase intensity-contrast with magenta slightly less bright
         context.fill();
 
         //draw the keyhole (for click animation)
         //only draw if animation is required
-        if(is_ani){
-            let tot_shift=3; //total shift of shape border in px
-            let shift=(ani_strength*(tot_shift+1))-1; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
+        if (is_ani) {
+            let tot_shift = 3; //total shift of shape border in px
+            let shift = (ani_strength * (tot_shift + 1)) -
+                1; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
             //if(shift<0){
-              //  shift=-2; //make the overlay shap smaller to make the disappearance anti-aliasing invisible
+            //  shift=-2; //make the overlay shap smaller to make the disappearance anti-aliasing invisible
             //}
             context.beginPath();
-            context.arc(250,210,20+shift,0,2*Math.PI,1);
-            context.fillStyle="black";
-            context.lineWidth=2*playerRadius;
+            context.arc(250, 210, 20 + shift, 0, 2 * Math.PI, 1);
+            context.fillStyle = col.lock.keyhole;
+            context.lineWidth = 2 * playerRadius;
             context.fill();
 
             context.beginPath();
-            context.rect(244-shift,220,12+(2*shift),50+shift);
-            context.fillStyle="black";
+            context.rect(244 - shift, 220, 12 + (2 * shift), 50 + shift);
+            context.fillStyle = col.lock.keyhole;
             context.fill();
             aniClick()
         }
 
-        context.translate(100,-30);
+        context.translate(100, -30);
 
-        context.translate(-100,0);
+        context.translate(-100, 0);
         //draw the score
-        context.font="30px Arial";
-        context.fillStyle = "black";
-        context.fillText("Score " + score,200, 28);
-        context.translate(100,0);
+        context.font = "30px Arial";
+        context.fillStyle = col.lock.outer;
+        context.fillText("Score " + score, 200, 28);
+        context.translate(100, 0);
 
         //show image frame
         /*context.beginPath();
@@ -589,49 +783,131 @@
         context.fillText(player_angle,1, 11);*/
 
         //reset the scale back to 1*real pixel
-        context.scale(1/screenCoord_scale,1/screenCoord_scale);
-        context.translate(-translation_offset.x,-translation_offset.y);  
+        context.scale(1 / screenCoord_scale, 1 / screenCoord_scale);
+        context.translate(-translation_offset.x, -translation_offset.y);
     }
 
-    function drawFrame_Gameover (){
-        context.translate(translation_offset.x,translation_offset.y);
+    function drawFrame_Gameover() {
+        context.translate(translation_offset.x, translation_offset.y);
         //scale the drawings
-        context.scale(screenCoord_scale,screenCoord_scale);
+        context.scale(screenCoord_scale, screenCoord_scale);
 
-        context.translate(-100,0);
+        context.translate(-100, 0);
 
         //draw background rectangle
         context.beginPath();
-        context.rect(150,180,200,50);
+        context.rect(150, 180, 200, 50);
         context.fillStyle = "yellow";
         context.fill();
 
         //draw gameover text
-        context.font="30px Arial";
+        context.font = "30px Arial";
         context.fillStyle = "black";
-        context.fillText("GAME OVER",160,220);
+        context.fillText("GAME OVER", 160, 220);
 
-        context.translate(100,0);
+        context.translate(100, 0);
 
         //reset the scale back to 1*real pixel
-        context.scale(1/screenCoord_scale,1/screenCoord_scale);
-        context.translate(-translation_offset.x,-translation_offset.y);
+        context.scale(1 / screenCoord_scale, 1 / screenCoord_scale);
+        context.translate(-translation_offset.x, -translation_offset.y);
     }
 
     const round = (number, decimalPlaces) => {
-    const factorOfTen = Math.pow(10, decimalPlaces);
-    return Math.round(number * factorOfTen) / factorOfTen;
+        const factorOfTen = Math.pow(10, decimalPlaces);
+        return Math.round(number * factorOfTen) / factorOfTen;
     }
 
     const floor = (number, decimalPlaces) => {
         var rounded = round(number, decimalPlaces);
-        if(rounded>number){
+        if (rounded > number) {
             const factorOfTen = Math.pow(10, -decimalPlaces);
-            rounded-=factorOfTen;
+            rounded -= factorOfTen;
         }
-        
+
         return rounded;
     }
 
+    //cookie functions
+    //prompts the user if cookies are not enabled
+    function askCookiePermission() {
+        //check if cookies are allowed already
+        if (getCookie("cookie_allowed") == "") {
+            //no cookies allowed yet, so ask permission
+            document.getElementById('cookieprompt').style.display = 'block';
+        }
+        is_cookie_allowed = checkCookiePermission();
+    }
+    //checks if cookies are allowed 
+    //returns true if allowed, false if not
+    function checkCookiePermission() {
+        //check if the user chose yes
+        if (getCookie("cookie_allowed") == "true") {
+            return true;
+        }
+        return false;
+    }
+
+    //loads the settings that are stored in cookies
+    function loadCookieSettings() {
+        if (getCookie("cookie_allowed") == "true") {
+            var val; //value of the currently loaded cookie
+            //colorblind setting
+            val = getCookie("is_colorblind");
+            if (val != "") {
+                if (val == "true") {
+                    document.getElementById("cb1").checked = true;
+                    document.getElementById("cb2").disabled = true;
+                }
+                if (val == "false") {
+                    document.getElementById("cb1").checked = false;
+                    document.getElementById("cb2").disabled = false;
+                }
+            }
+            //darkmode setting
+            val = getCookie("is_darkmode");
+            if (val != "") {
+                if (val == "true") {
+                    document.getElementById("cb2").checked = true;
+                    document.getElementById("cb1").disabled = true;
+                }
+                if (val == "false") {
+                    document.getElementById("cb2").checked = false;
+                    document.getElementById("cb1").disabled = false;
+                }
+            }
+        }
+    }
+
+    //specify a value for a new or existing cookie
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/; SameSite=Strict";
+    }
+
+    //read and return value of cookie
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+    /*
+    cookies that this page uses:
+        -"cookie_allowed": true if allowed, otherwise not defined
+        -"is_darkmode": true if darkmode
+        -"is_colorblind": true if colorblind mode
+    */
 </script>
+
 </html>
