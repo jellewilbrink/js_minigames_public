@@ -143,11 +143,11 @@
             col = {
                 lock: {
                     outer: "#555",
-                    inner: "#020826",
+                    inner: "#020215",
                     upper: "#777",
                     keyhole: "#777"
                 },
-                bg: "#040420", // color of the background
+                bg: "#020215", // color of the background
                 player: "rgb(0,225,0)",
                 target: "#ff00af"
             }
@@ -193,7 +193,7 @@
      *** collision detection (especially on mobile android) is not always accurate  
      */
 
-    const code_version = "2.0";
+    const code_version = "2.1";
 
     var is_cookie_allowed = false;
 
@@ -232,6 +232,7 @@
 
     var GameState = "play"; // current state of the game. list of states: play, gameover
 
+    var highscore=0;
     var score = 0; //number of hits the player made
 
     var player_angle = 0; //angle of the player (in rad)
@@ -467,6 +468,8 @@
                 }
                 break;
             case "gameover":
+                //update the highscore
+                updateHighScore();
                 //restart the game
                 initVars();
                 break;
@@ -793,7 +796,7 @@
 
         //draw background rectangle
         context.beginPath();
-        context.rect(150, 180, 200, 50);
+        context.rect(150, 180, 200, 100);
         context.fillStyle = "yellow";
         context.fill();
 
@@ -801,6 +804,13 @@
         context.font = "30px Arial";
         context.fillStyle = "black";
         context.fillText("GAME OVER", 160, 220);
+        context.font = "20px Arial";
+        context.fillStyle = "black";
+        context.fillText("Highscore", 160, 250);
+        context.fillText(highscore.toString(10), 270, 250);
+        context.fillText("Score", 160, 270);
+        context.fillText(score.toString(10), 270, 270);
+
 
         context.translate(100, 0);
 
@@ -822,6 +832,17 @@
         }
 
         return rounded;
+    }
+
+    function updateHighScore(){
+        if(score>highscore){
+            //update the highscore if a new one is set
+            highscore=score;
+            //also save the new highscore in a cookie
+            if(checkCookiePermission()){
+            setCookie("highscore",score.toString(10),1800);
+        }
+        }
     }
 
     //cookie functions
@@ -846,7 +867,7 @@
 
     //loads the settings that are stored in cookies
     function loadCookieSettings() {
-        if (getCookie("cookie_allowed") == "true") {
+        if (checkCookiePermission()) {
             var val; //value of the currently loaded cookie
             //colorblind setting
             val = getCookie("is_colorblind");
@@ -871,6 +892,11 @@
                     document.getElementById("cb2").checked = false;
                     document.getElementById("cb1").disabled = false;
                 }
+            }
+            //highscore
+            val = getCookie("highscore");
+            if (val != "") {
+                highscore=parseInt(getCookie("highscore"),10);
             }
             //apply settings after loading
             handleOptions();
@@ -906,6 +932,7 @@
         -"cookie_allowed": true if allowed, otherwise not defined
         -"is_darkmode": true if darkmode
         -"is_colorblind": true if colorblind mode
+        -"highscore": integer value containing the highest achieved score on this device
     */
 </script>
 
