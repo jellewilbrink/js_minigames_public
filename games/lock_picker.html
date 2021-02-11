@@ -301,7 +301,6 @@
 
         //apply saved settings from cookies (if applicable)
         loadCookieSettings();
-        handleOptions();
 
         init();
     }
@@ -425,9 +424,7 @@
                     //only change player coordinates if there is no collision detection running for the current set of coordinates
                     updatePlayer();
                 }
-                if (!(GameTime % 2) || !is_colorblind) {
-                    drawFrame();
-                }
+                drawFrame();
                 break;
             case "gameover":
                 drawFrame_Gameover();
@@ -875,6 +872,8 @@
                     document.getElementById("cb1").disabled = false;
                 }
             }
+            //apply settings after loading
+            handleOptions();
         }
     }
 
