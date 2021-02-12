@@ -33,6 +33,10 @@
                 <label>Colorblind mode</label></p>
             <input class="w3-check" type="checkbox" autocomplete="off" id="cb2">
             <label>Dark mode</label></p>
+            <button
+            onclick="showCookiePrompt();"
+            type="button" class="w3-button w3-grey w3-ripple">Change cookie preferences</button>
+
         </form>
     </div>
 
@@ -80,15 +84,23 @@
 
             <div class="w3-container">
                 <p>This page wants to use cookies.</p>
-                <p>The cookies are only used for the game to remember your personal settings.</p>
+                <p>The cookies are only used for the game to: 
+                    <ul><li>
+                        remember your   <i>highscore</i> 
+                    </li>
+                    <li>
+                        remember your <i>settings</i> 
+                    </li>
+                </ul>
+                </p>
                 <p>Do you allow cookies?</p>
             </div>
 
             <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                 <button
-                    onclick="document.getElementById('cookieprompt').style.display='none';setCookie('cookie_allowed',true,1800);"
+                    onclick="document.getElementById('cookieprompt').style.display='none';setCookie('cookie_allowed',true,700);"
                     type="button" class="w3-button w3-grey w3-ripple">Yes</button>
-                <button onclick="document.getElementById('cookieprompt').style.display='none'" type="button"
+                <button onclick="document.getElementById('cookieprompt').style.display='none'; deleteCookies();" type="button"
                     class="w3-button w3-grey w3-ripple">No</button>
             </div>
 
@@ -177,8 +189,8 @@
         }
         //save the new settings into cookies
         if (is_cookie_allowed) {
-            setCookie("is_colorblind", is_colorblind, 1800);
-            setCookie("is_darkmode", is_darkmode, 1800);
+            setCookie("is_colorblind", is_colorblind, 400);
+            setCookie("is_darkmode", is_darkmode, 400);
         }
         //implement the new options
         init();
@@ -195,7 +207,8 @@
 
     const code_version = "2.1";
 
-    var is_cookie_allowed = false;
+    var is_cookie_allowed = false; //true if user has allowed cookies
+    var cookie_permission_asked=false; //true if the user was asked to permit cookies during this session
 
     //define the colors to use in one place
     var col = {
@@ -566,7 +579,9 @@
         }
 
         var Angle_player_upper = Angle_player_center + Math.asin(playerRadius / 100);
+        Angle_player_upper= Angle_player_upper%(2*Math.PI);
         var Angle_player_lower = Angle_player_center - Math.asin(playerRadius / 100);
+        Angle_player_lower= Angle_player_lower%(2*Math.PI);
 
         var GoalPos_upper = GoalPos + GoalSize;
 
@@ -840,8 +855,12 @@
             highscore=score;
             //also save the new highscore in a cookie
             if(checkCookiePermission()){
-            setCookie("highscore",score.toString(10),1800);
-        }
+                setCookie("highscore",score.toString(10),700);
+            }
+            else{
+                //no cookie permission, so prompt for it
+                askCookiePermission();
+            }
         }
     }
 
@@ -849,11 +868,17 @@
     //prompts the user if cookies are not enabled
     function askCookiePermission() {
         //check if cookies are allowed already
-        if (getCookie("cookie_allowed") == "") {
+        if ((getCookie("cookie_allowed") == "") && !cookie_permission_asked) {
             //no cookies allowed yet, so ask permission
-            document.getElementById('cookieprompt').style.display = 'block';
+            showCookiePrompt();
+            cookie_permission_asked=true;
         }
         is_cookie_allowed = checkCookiePermission();
+    }
+    
+    //shows the cookie prompt
+    function showCookiePrompt(){
+        document.getElementById('cookieprompt').style.display = 'block';
     }
     //checks if cookies are allowed 
     //returns true if allowed, false if not
@@ -901,6 +926,15 @@
             //apply settings after loading
             handleOptions();
         }
+    }
+
+    //deletes all cookies of this webpage
+    function  deleteCookies(){
+        //set all cookies to a passed date to remove them
+        setCookie("cookie_allowed","",-1);
+        setCookie("is_darkmode","",-1);
+        setCookie("is_colorblind","",-1);
+        setCookie("highscore","",-1);
     }
 
     //specify a value for a new or existing cookie
