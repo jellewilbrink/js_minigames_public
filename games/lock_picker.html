@@ -147,6 +147,7 @@
             col.lock.inner = col.bg;
             col.player = "#0000bb";
             col.target = "#FF8000";
+            col.browsertheme=col.bg
 
             document.getElementById("cb2").disabled = true;
             is_darkmode = false;
@@ -161,7 +162,8 @@
                 },
                 bg: "#020215", // color of the background
                 player: "rgb(0,225,0)",
-                target: "#ff00af"
+                target: "#ff00af",
+                browsertheme:"#020215"
             }
             document.getElementsByClassName("hover-icon-bg")[0].style.borderColor = "white";
 
@@ -180,7 +182,8 @@
                 },
                 bg: "cyan", // color of the background
                 player: "rgb(0,225,0)",
-                target: "#ff00af"
+                target: "#ff00af",
+                browsertheme:"#00c5d3"
             }
             document.getElementsByClassName("hover-icon-bg")[0].style.borderColor = "black";
 
@@ -196,6 +199,12 @@
         init();
     }
 
+    function changeThemeColor() {
+        console.log("got here");
+        var metaThemeColor = document.querySelector("meta[name=theme-color]");
+        metaThemeColor.setAttribute("content", col.browsertheme);
+    }
+
     /* SOME CONSTRAINTS ON THE VARIABLES:
      *** Goalsize must be greater than player diameter, else collision detection may fail
      *** The Goalsize should also not be too large because otherwise the generation loaction constraints may never be met, crashing the game
@@ -205,7 +214,7 @@
      *** collision detection (especially on mobile android) is not always accurate  
      */
 
-    const code_version = "2.1";
+    const code_version = "2.2";
 
     var is_cookie_allowed = false; //true if user has allowed cookies
     var cookie_permission_asked=false; //true if the user was asked to permit cookies during this session
@@ -332,6 +341,9 @@
 
         //init variables
         initVars();
+
+        //set the browser theme color
+        changeThemeColor();
 
         //draw background frame
         drawFrame_static();
