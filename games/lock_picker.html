@@ -33,6 +33,10 @@
                 <label>Colorblind mode</label></p>
             <input class="w3-check" type="checkbox" autocomplete="off" id="cb2">
             <label>Dark mode</label></p>
+            <button
+            onclick="showCookiePrompt();"
+            type="button" class="w3-button w3-grey w3-ripple">Change cookie preferences</button>
+
         </form>
     </div>
 
@@ -88,7 +92,7 @@
                 <button
                     onclick="document.getElementById('cookieprompt').style.display='none';setCookie('cookie_allowed',true,700);"
                     type="button" class="w3-button w3-grey w3-ripple">Yes</button>
-                <button onclick="document.getElementById('cookieprompt').style.display='none'" type="button"
+                <button onclick="document.getElementById('cookieprompt').style.display='none'; deleteCookies();" type="button"
                     class="w3-button w3-grey w3-ripple">No</button>
             </div>
 
@@ -195,7 +199,8 @@
 
     const code_version = "2.1";
 
-    var is_cookie_allowed = false;
+    var is_cookie_allowed = false; //true if user has allowed cookies
+    var cookie_permission_asked=false; //true if the user was asked to permit cookies during this session
 
     //define the colors to use in one place
     var col = {
@@ -566,7 +571,9 @@
         }
 
         var Angle_player_upper = Angle_player_center + Math.asin(playerRadius / 100);
+        Angle_player_upper= Angle_player_upper%(2*Math.PI);
         var Angle_player_lower = Angle_player_center - Math.asin(playerRadius / 100);
+        Angle_player_lower= Angle_player_lower%(2*Math.PI);
 
         var GoalPos_upper = GoalPos + GoalSize;
 
@@ -853,11 +860,17 @@
     //prompts the user if cookies are not enabled
     function askCookiePermission() {
         //check if cookies are allowed already
-        if (getCookie("cookie_allowed") == "") {
+        if ((getCookie("cookie_allowed") == "") && !cookie_permission_asked) {
             //no cookies allowed yet, so ask permission
-            document.getElementById('cookieprompt').style.display = 'block';
+            showCookiePrompt();
+            cookie_permission_asked=true;
         }
         is_cookie_allowed = checkCookiePermission();
+    }
+    
+    //shows the cookie prompt
+    function showCookiePrompt(){
+        document.getElementById('cookieprompt').style.display = 'block';
     }
     //checks if cookies are allowed 
     //returns true if allowed, false if not
@@ -905,6 +918,15 @@
             //apply settings after loading
             handleOptions();
         }
+    }
+
+    //deletes all cookies of this webpage
+    function  deleteCookies(){
+        //set all cookies to a passed date to remove them
+        setCookie("cookie_allowed","",-1);
+        setCookie("is_darkmode","",-1);
+        setCookie("is_colorblind","",-1);
+        setCookie("highscore","",-1);
     }
 
     //specify a value for a new or existing cookie
