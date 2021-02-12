@@ -99,7 +99,7 @@
             <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                 <button
                     onclick="document.getElementById('cookieprompt').style.display='none';setCookie('cookie_allowed',true,700);"
-                    type="button" class="w3-button w3-grey w3-ripple">Yes</button>
+                    type="button" class="w3-button w3-grey w3-ripple w3-margin-right">Yes</button>
                 <button onclick="document.getElementById('cookieprompt').style.display='none'; deleteCookies();" type="button"
                     class="w3-button w3-grey w3-ripple">No</button>
             </div>
@@ -147,7 +147,7 @@
             col.lock.inner = col.bg;
             col.player = "#0000bb";
             col.target = "#FF8000";
-            col.browsertheme=col.bg
+            col.browsertheme="#fefefe";
 
             document.getElementById("cb2").disabled = true;
             is_darkmode = false;
@@ -200,7 +200,6 @@
     }
 
     function changeThemeColor() {
-        console.log("got here");
         var metaThemeColor = document.querySelector("meta[name=theme-color]");
         metaThemeColor.setAttribute("content", col.browsertheme);
     }
