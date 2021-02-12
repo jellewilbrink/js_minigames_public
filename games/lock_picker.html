@@ -80,13 +80,13 @@
 
             <div class="w3-container">
                 <p>This page wants to use cookies.</p>
-                <p>The cookies are only used for the game to remember your personal settings.</p>
+                <p>The cookies are only used for the game to remember your highscore and personal settings.</p>
                 <p>Do you allow cookies?</p>
             </div>
 
             <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                 <button
-                    onclick="document.getElementById('cookieprompt').style.display='none';setCookie('cookie_allowed',true,1800);"
+                    onclick="document.getElementById('cookieprompt').style.display='none';setCookie('cookie_allowed',true,700);"
                     type="button" class="w3-button w3-grey w3-ripple">Yes</button>
                 <button onclick="document.getElementById('cookieprompt').style.display='none'" type="button"
                     class="w3-button w3-grey w3-ripple">No</button>
@@ -177,8 +177,8 @@
         }
         //save the new settings into cookies
         if (is_cookie_allowed) {
-            setCookie("is_colorblind", is_colorblind, 1800);
-            setCookie("is_darkmode", is_darkmode, 1800);
+            setCookie("is_colorblind", is_colorblind, 400);
+            setCookie("is_darkmode", is_darkmode, 400);
         }
         //implement the new options
         init();
@@ -840,8 +840,12 @@
             highscore=score;
             //also save the new highscore in a cookie
             if(checkCookiePermission()){
-            setCookie("highscore",score.toString(10),1800);
-        }
+                setCookie("highscore",score.toString(10),700);
+            }
+            else{
+                //no cookie permission, so prompt for it
+                askCookiePermission();
+            }
         }
     }
 
