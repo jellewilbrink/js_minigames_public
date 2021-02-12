@@ -5,6 +5,13 @@ console.log("Site version: " + code_version);
 
 //update serviceworker policy based on: https://whatwebcando.today/articles/handling-service-worker-updates/ 
 
+//decide if now is the right time for the serviceworker to update
+function invokeServiceWorkerUpdateFlow(registration) {
+    //now is a good time
+    //send message to do the update the the serviceworker
+    registration.waiting.postMessage('SKIP_WAITING');
+}
+
 //register the serviceworker
 // check if the browser supports serviceWorker at all
 if ('serviceWorker' in navigator) {
@@ -16,7 +23,7 @@ if ('serviceWorker' in navigator) {
         // ensure the case when the updatefound event was missed is also handled
         // by re-invoking the prompt when there's a waiting Service Worker
         if (registration.waiting) {
-            invokeServiceWorkerUpdateFlow(registration)
+            invokeServiceWorkerUpdateFlow(registration);
         }
 
         // detect Service Worker update available and wait for it to become installed
@@ -27,7 +34,7 @@ if ('serviceWorker' in navigator) {
                     if (registration.waiting) {
                         // if there's an existing controller (previous Service Worker), update immediately
                         if (navigator.serviceWorker.controller) {
-                            registration.waiting.postMessage('SKIP_WAITING');
+                            invokeServiceWorkerUpdateFlow(registration);
                         } else {
                             // otherwise it's the first install, nothing to do
                             console.log('Service Worker initialized for the first time')
