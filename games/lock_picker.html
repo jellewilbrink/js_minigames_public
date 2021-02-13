@@ -666,6 +666,10 @@
         return;
     }
 
+    //include heart image for valentines day
+    var imageObj = new Image();
+    imageObj.src = '../resources/redheart.png';
+
     //draw the static 'background' of the game
     //this includes the actual background but also the immobile parts of the lock
     function drawFrame_static() {
@@ -703,7 +707,8 @@
         context2.lineWidth = 2 * playerRadius;
         context2.fill();
 
-        context2.beginPath();
+        //keyhole
+        /*context2.beginPath();
         context2.arc(250, 210, 20, 0, 2 * Math.PI, 1);
         context2.fillStyle = col.lock.keyhole;
         context2.lineWidth = 2 * playerRadius;
@@ -712,7 +717,9 @@
         context2.beginPath();
         context2.rect(244, 220, 12, 50);
         context2.fillStyle = col.lock.keyhole;
-        context2.fill();
+        context2.fill();*/
+        //valentinesday image
+        context2.drawImage(imageObj, 205, 190,90,90);
 
         //outer circle
         context2.beginPath();
@@ -755,12 +762,11 @@
         //only draw if animation is required
         if (is_ani) {
             let tot_shift = 3; //total shift of shape border in px
-            let shift = (ani_strength * (tot_shift + 1)) -
-                1; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
+            let shift = (ani_strength * (tot_shift + 1)) -1; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
             //if(shift<0){
             //  shift=-2; //make the overlay shap smaller to make the disappearance anti-aliasing invisible
             //}
-            context.beginPath();
+            /*context.beginPath();
             context.arc(250, 210, 20 + shift, 0, 2 * Math.PI, 1);
             context.fillStyle = col.lock.keyhole;
             context.lineWidth = 2 * playerRadius;
@@ -770,7 +776,11 @@
             context.rect(244 - shift, 220, 12 + (2 * shift), 50 + shift);
             context.fillStyle = col.lock.keyhole;
             context.fill();
-            aniClick()
+            */
+            
+            shift*=3;
+            context.drawImage(imageObj, 205-(shift/2), 190-shift/2,90+shift,90+shift);
+            aniClick();
         }
 
         context.translate(100, -30);
