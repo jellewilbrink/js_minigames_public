@@ -33,9 +33,8 @@
                 <label>Colorblind mode</label></p>
             <input class="w3-check" type="checkbox" autocomplete="off" id="cb2">
             <label>Dark mode</label></p>
-            <button
-            onclick="showCookiePrompt();"
-            type="button" class="w3-button w3-border w3-ripple w3-margin-bottom">Change cookie preferences</button>
+            <button onclick="showCookiePrompt();" type="button"
+                class="w3-button w3-border w3-ripple w3-margin-bottom">Change cookie preferences</button>
 
         </form>
     </div>
@@ -84,14 +83,15 @@
 
             <div class="w3-container">
                 <p>This page wants to use cookies.</p>
-                <p>The cookies are only used for the game to: 
-                    <ul><li>
-                        remember your   <i>highscore</i> 
-                    </li>
-                    <li>
-                        remember your <i>settings</i> 
-                    </li>
-                </ul>
+                <p>The cookies are only used for the game to:
+                    <ul>
+                        <li>
+                            remember your <i>highscore</i>
+                        </li>
+                        <li>
+                            remember your <i>settings</i>
+                        </li>
+                    </ul>
                 </p>
                 <p>Do you allow cookies?</p>
             </div>
@@ -100,8 +100,8 @@
                 <button
                     onclick="document.getElementById('cookieprompt').style.display='none';setCookie('cookie_allowed',true,700);"
                     type="button" class="w3-button w3-grey w3-ripple w3-margin-right">Yes</button>
-                <button onclick="document.getElementById('cookieprompt').style.display='none'; deleteCookies();" type="button"
-                    class="w3-button w3-grey w3-ripple">No</button>
+                <button onclick="document.getElementById('cookieprompt').style.display='none'; deleteCookies();"
+                    type="button" class="w3-button w3-grey w3-ripple">No</button>
             </div>
 
         </div>
@@ -139,7 +139,26 @@
         //check the selected options
         is_colorblind = document.getElementById("cb1").checked;
         is_darkmode = document.getElementById("cb2").checked;
-        if (is_colorblind) {
+        if (is_colorblind && is_darkmode) {
+            //set darkmode of the colorblind mode
+            thickness_lockring = 0.5 * playerRadius; //the tickness of the outer lock ring in px
+            thickness_goal = playerRadius; //the tickness of the goal in px
+
+            col = {
+                lock: {
+                    outer: "#fff",
+                    inner: "#020215",
+                    upper: "#aaa",
+                    keyhole: "#aaa"
+                },
+                bg: "#020215", // color of the background
+                player: "#55ffff",
+                target: "#FC2626",
+                browsertheme: "#020215"
+            }
+            document.getElementsByClassName("hover-icon-bg")[0].style.borderColor = "white";
+
+        } else if (is_colorblind) {
             //set colorblind settings
             thickness_lockring = 0.5 * playerRadius; //the tickness of the outer lock ring in px
             thickness_goal = playerRadius; //the tickness of the goal in px
@@ -147,10 +166,8 @@
             col.lock.inner = col.bg;
             col.player = "#0000bb";
             col.target = "#FF8000";
-            col.browsertheme="#fefefe";
+            col.browsertheme = "#fefefe";
 
-            document.getElementById("cb2").disabled = true;
-            is_darkmode = false;
         } else if (is_darkmode) {
             //set darkmode settings
             col = {
@@ -163,12 +180,10 @@
                 bg: "#020215", // color of the background
                 player: "rgb(0,225,0)",
                 target: "#ff00af",
-                browsertheme:"#020215"
+                browsertheme: "#020215"
             }
             document.getElementsByClassName("hover-icon-bg")[0].style.borderColor = "white";
 
-            is_colorblind = false;
-            document.getElementById("cb1").disabled = true;
         } else {
             //set default settings
             thickness_lockring = 2 * playerRadius; //the tickness of the outer lock ring in px
@@ -183,12 +198,10 @@
                 bg: "cyan", // color of the background
                 player: "rgb(0,225,0)",
                 target: "#ff00af",
-                browsertheme:"#00c5d3"
+                browsertheme: "#00c5d3"
             }
             document.getElementsByClassName("hover-icon-bg")[0].style.borderColor = "black";
 
-            document.getElementById("cb1").disabled = false;
-            document.getElementById("cb2").disabled = false;
         }
         //save the new settings into cookies
         if (is_cookie_allowed) {
@@ -213,10 +226,10 @@
      *** collision detection (especially on mobile android) is not always accurate  
      */
 
-    const code_version = "2.2";
+    const code_version = "2.3";
 
     var is_cookie_allowed = false; //true if user has allowed cookies
-    var cookie_permission_asked=false; //true if the user was asked to permit cookies during this session
+    var cookie_permission_asked = false; //true if the user was asked to permit cookies during this session
 
     //define the colors to use in one place
     var col = {
@@ -253,7 +266,7 @@
 
     var GameState = "play"; // current state of the game. list of states: play, gameover
 
-    var highscore=0;
+    var highscore = 0;
     var score = 0; //number of hits the player made
 
     var player_angle = 0; //angle of the player (in rad)
@@ -343,6 +356,9 @@
 
         //set the browser theme color
         changeThemeColor();
+        
+        //enable special graphics on special
+        SpecialDayGraphics();
 
         //draw background frame
         drawFrame_static();
@@ -590,9 +606,9 @@
         }
 
         var Angle_player_upper = Angle_player_center + Math.asin(playerRadius / 100);
-        Angle_player_upper= Angle_player_upper%(2*Math.PI);
+        Angle_player_upper = Angle_player_upper % (2 * Math.PI);
         var Angle_player_lower = Angle_player_center - Math.asin(playerRadius / 100);
-        Angle_player_lower= Angle_player_lower%(2*Math.PI);
+        Angle_player_lower = Angle_player_lower % (2 * Math.PI);
 
         var GoalPos_upper = GoalPos + GoalSize;
 
@@ -666,9 +682,31 @@
         return;
     }
 
-    //include heart image for valentines day
-    var imageObj = new Image();
-    imageObj.src = '../resources/redheart.png';
+    //holiday themes
+    //enable special graphics on special days
+    var isSpecialDay = false; //true if there is a special image for today
+    const today = new Date(); //date information of the current day
+    var img_keyhole = new Image(); //image to display instead of normal keyhole
+    function SpecialDayGraphics() {
+        if (isSameDay(today, new Date("14 Feb 2021"))) {
+            //valentines day
+            img_keyhole.src = '../resources/redheart.png';
+            isSpecialDay = true;
+        }
+    }
+
+    img_keyhole.onload=function(){
+        //redraw the static frame when the image loads
+        drawFrame_static();
+    }
+
+    //returns true if the UTC dates are the same. Expects date objects as input
+    function isSameDay(date1, date2) {
+        if ((date1.getDate() === date2.getDate()) && (date1.getMonth() === date2.getMonth())) {
+            return true;
+        }
+        return false;
+    }
 
     //draw the static 'background' of the game
     //this includes the actual background but also the immobile parts of the lock
@@ -708,18 +746,22 @@
         context2.fill();
 
         //keyhole
-        /*context2.beginPath();
-        context2.arc(250, 210, 20, 0, 2 * Math.PI, 1);
-        context2.fillStyle = col.lock.keyhole;
-        context2.lineWidth = 2 * playerRadius;
-        context2.fill();
+        if (!isSpecialDay) {
+            //normal image
+            context2.beginPath();
+            context2.arc(250, 210, 20, 0, 2 * Math.PI, 1);
+            context2.fillStyle = col.lock.keyhole;
+            context2.lineWidth = 2 * playerRadius;
+            context2.fill();
 
-        context2.beginPath();
-        context2.rect(244, 220, 12, 50);
-        context2.fillStyle = col.lock.keyhole;
-        context2.fill();*/
-        //valentinesday image
-        context2.drawImage(imageObj, 205, 190,90,90);
+            context2.beginPath();
+            context2.rect(244, 220, 12, 50);
+            context2.fillStyle = col.lock.keyhole;
+            context2.fill();
+        } else {
+            //special day image
+            context2.drawImage(img_keyhole, 205, 190, 90, 90);
+        }
 
         //outer circle
         context2.beginPath();
@@ -762,24 +804,30 @@
         //only draw if animation is required
         if (is_ani) {
             let tot_shift = 3; //total shift of shape border in px
-            let shift = (ani_strength * (tot_shift + 1)) -1; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
+            let shift = (ani_strength * (tot_shift + 1)) -
+            1; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
             //if(shift<0){
             //  shift=-2; //make the overlay shap smaller to make the disappearance anti-aliasing invisible
             //}
-            /*context.beginPath();
-            context.arc(250, 210, 20 + shift, 0, 2 * Math.PI, 1);
-            context.fillStyle = col.lock.keyhole;
-            context.lineWidth = 2 * playerRadius;
-            context.fill();
+            if (!isSpecialDay) {
+                //normal day image
+                context.beginPath();
+                context.arc(250, 210, 20 + shift, 0, 2 * Math.PI, 1);
+                context.fillStyle = col.lock.keyhole;
+                context.lineWidth = 2 * playerRadius;
+                context.fill();
 
-            context.beginPath();
-            context.rect(244 - shift, 220, 12 + (2 * shift), 50 + shift);
-            context.fillStyle = col.lock.keyhole;
-            context.fill();
-            */
-            
-            shift*=3;
-            context.drawImage(imageObj, 205-(shift/2), 190-shift/2,90+shift,90+shift);
+                context.beginPath();
+                context.rect(244 - shift, 220, 12 + (2 * shift), 50 + shift);
+                context.fillStyle = col.lock.keyhole;
+                context.fill();
+
+            } else {
+                //special day image
+                shift *= 3;
+                context.drawImage(img_keyhole, 205 - (shift / 2), 190 - shift / 2, 90 + shift, 90 + shift);
+            }
+
             aniClick();
         }
 
@@ -870,15 +918,14 @@
         return rounded;
     }
 
-    function updateHighScore(){
-        if(score>highscore){
+    function updateHighScore() {
+        if (score > highscore) {
             //update the highscore if a new one is set
-            highscore=score;
+            highscore = score;
             //also save the new highscore in a cookie
-            if(checkCookiePermission()){
-                setCookie("highscore",score.toString(10),700);
-            }
-            else{
+            if (checkCookiePermission()) {
+                setCookie("highscore", score.toString(10), 700);
+            } else {
                 //no cookie permission, so prompt for it
                 askCookiePermission();
             }
@@ -892,13 +939,13 @@
         if ((getCookie("cookie_allowed") == "") && !cookie_permission_asked) {
             //no cookies allowed yet, so ask permission
             showCookiePrompt();
-            cookie_permission_asked=true;
+            cookie_permission_asked = true;
         }
         is_cookie_allowed = checkCookiePermission();
     }
-    
+
     //shows the cookie prompt
-    function showCookiePrompt(){
+    function showCookiePrompt() {
         document.getElementById('cookieprompt').style.display = 'block';
     }
     //checks if cookies are allowed 
@@ -920,11 +967,9 @@
             if (val != "") {
                 if (val == "true") {
                     document.getElementById("cb1").checked = true;
-                    document.getElementById("cb2").disabled = true;
                 }
                 if (val == "false") {
                     document.getElementById("cb1").checked = false;
-                    document.getElementById("cb2").disabled = false;
                 }
             }
             //darkmode setting
@@ -932,17 +977,15 @@
             if (val != "") {
                 if (val == "true") {
                     document.getElementById("cb2").checked = true;
-                    document.getElementById("cb1").disabled = true;
                 }
                 if (val == "false") {
                     document.getElementById("cb2").checked = false;
-                    document.getElementById("cb1").disabled = false;
                 }
             }
             //highscore
             val = getCookie("highscore");
             if (val != "") {
-                highscore=parseInt(getCookie("highscore"),10);
+                highscore = parseInt(getCookie("highscore"), 10);
             }
             //apply settings after loading
             handleOptions();
@@ -950,12 +993,12 @@
     }
 
     //deletes all cookies of this webpage
-    function  deleteCookies(){
+    function deleteCookies() {
         //set all cookies to a passed date to remove them
-        setCookie("cookie_allowed","",-1);
-        setCookie("is_darkmode","",-1);
-        setCookie("is_colorblind","",-1);
-        setCookie("highscore","",-1);
+        setCookie("cookie_allowed", "", -1);
+        setCookie("is_darkmode", "", -1);
+        setCookie("is_colorblind", "", -1);
+        setCookie("highscore", "", -1);
     }
 
     //specify a value for a new or existing cookie
