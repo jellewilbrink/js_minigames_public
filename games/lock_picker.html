@@ -162,6 +162,7 @@
             //set colorblind settings
             thickness_lockring = 0.5 * playerRadius; //the tickness of the outer lock ring in px
             thickness_goal = playerRadius; //the tickness of the goal in px
+            
             col.bg = "white";
             col.lock.inner = col.bg;
             col.player = "#0000bb";
@@ -170,6 +171,9 @@
 
         } else if (is_darkmode) {
             //set darkmode settings
+            thickness_lockring = 2 * playerRadius; //the tickness of the outer lock ring in px
+            thickness_goal = 2 * playerRadius; //the tickness of the goal in px
+
             col = {
                 lock: {
                     outer: "#555",
