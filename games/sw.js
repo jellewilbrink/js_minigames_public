@@ -2,20 +2,16 @@
 //MDN tutorial: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Offline_Service_workers
 
 // Files to cache
-const cacheName = 'minigames_cache-v1.23'; //version name convention: v<numgames>_<update_version>
+const cacheName = 'minigames_cache-v1.0'; //version name convention: v<numgames>_<update_version>
 const appShellFiles = [
-  '/js_minigames_public/index.html',
   '/js_minigames_public/w3.css',
-  '/js_minigames_public/resources/icon_lockpicker.png',
-  '/js_minigames_public/resources/icons/favicon.ico',
-  '/js_minigames_public/resources/icons/favicon.svg',
-  '/js_minigames_public/resources/icons/icon_apple_pinned_tab.svg',
-  '/js_minigames_public/resources/icons/icon_transparent.svg',
-  '/js_minigames_public/resources/icons/icon180_mask.png',
-  '/js_minigames_public/resources/icons/icon192_mask.png',
-  '/js_minigames_public/resources/icons/icon512_mask.png',
+  '/js_minigames_public/resources/redheart.png'
 ];
 const gamesFiles = [
+    '/js_minigames_public/games/lock_picker.html',
+    '/js_minigames_public/resources/icons/games/lp_icon180.png',
+    '/js_minigames_public/resources/icons/games/lp_icon192.png',
+    '/js_minigames_public/resources/icons/games/lp_icon512.png',
 ];
 
 const contentToCache = appShellFiles.concat(gamesFiles);
