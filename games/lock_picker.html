@@ -5,19 +5,21 @@
 <html lang="en">
 
 <head>
+    <title>Lock picker game</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#00c5d3" />
+    <meta name="theme-color" content="#00ffff" />
     <meta name="Description" content="Arcade minigame about lock picking.">
-    <meta name="keywords" content="JavaScript, game, arcade, opensource, lockpicker, pwa">
+    <meta name="keywords" content="JavaScript, game, arcade, opensource, lockpicker, pwa, Progressive Web App">
 
-    <link rel="icon" href="../resources/icons/favicon.ico">
-    <link rel="icon" href="../resources/icons/favicon.svg" type="image/svg+xml">
-    <link rel="mask-icon" href="../resources/icons/icon_apple_pinned_tab.svg" color="#FF961D">
-    <link rel="apple-touch-icon" href="../resources/icons/icon180_mask.png">
-    <title>Lock picker game</title>
+    <link rel="icon" href="../resources/icons/games/favicon.ico">
+    <link rel="icon" href="../resources/icons/games/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="../resources/icons/games/lp_icon180.png">
+    <link rel="manifest" href="manifest.webmanifest">
 
     <link rel="stylesheet" href="../w3.css">
+
+    <script src="handle_sw.js"></script>
 </head>
 
 <body>
@@ -33,6 +35,10 @@
                 <label>Colorblind mode</label></p>
             <input class="w3-check" type="checkbox" autocomplete="off" id="cb2">
             <label>Dark mode</label></p>
+
+            <button onclick="showTutorial();" type="button"
+            class="w3-button w3-border w3-ripple w3-margin-bottom">Show gameplay tutorial</button>
+                <br>
             <button onclick="showCookiePrompt();" type="button"
                 class="w3-button w3-border w3-ripple w3-margin-bottom">Change cookie preferences</button>
 
@@ -98,10 +104,33 @@
 
             <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                 <button
-                    onclick="document.getElementById('cookieprompt').style.display='none';setCookie('cookie_allowed',true,700);"
+                    onclick="document.getElementById('cookieprompt').style.display='none';setCookie('cookie_allowed',true,700);setCookie('is_tut',false,400);"
                     type="button" class="w3-button w3-grey w3-ripple w3-margin-right">Yes</button>
                 <button onclick="document.getElementById('cookieprompt').style.display='none'; deleteCookies();"
                     type="button" class="w3-button w3-grey w3-ripple">No</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="tut" class="w3-modal">
+        <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+            <header class="w3-container">
+                <h2>Tutorial</h2>
+            </header>
+
+            <div class="w3-container">
+              <p>Welcome to the lock picker game! <br>
+            Tap or click the screen when the moving cursor is on top of the target area to pick the lock. <br>
+            This will increase your score. <br>
+            Go for the highest score! <br>
+            But beware: the game gets harder as your score increases! <br>
+            Have fun playing!</p>
+            </div>
+
+            <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                <button onclick="document.getElementById('tut').style.display='none';"
+                    type="button" class="w3-button w3-grey w3-ripple">OK! Let's play!</button>
             </div>
 
         </div>
@@ -234,6 +263,7 @@
 
     var is_cookie_allowed = false; //true if user has allowed cookies
     var cookie_permission_asked = false; //true if the user was asked to permit cookies during this session
+    var is_tut=true; //true if the user should see the tutorial
 
     //define the colors to use in one place
     var col = {
@@ -357,6 +387,11 @@
 
         //init variables
         initVars();
+
+        //show tutorial if the user visits for the first time (or has cookies disabled)
+        if(is_tut){
+            showTutorial();
+        }
 
         //set the browser theme color
         changeThemeColor();
@@ -936,6 +971,13 @@
         }
     }
 
+    function showTutorial() {
+        document.getElementById('tut').style.display = 'block';
+        
+        //since the tutorial should be shown at most once per session its boolean is set false
+        is_tut=false;
+    }
+
     //cookie functions
     //prompts the user if cookies are not enabled
     function askCookiePermission() {
@@ -965,6 +1007,17 @@
     //loads the settings that are stored in cookies
     function loadCookieSettings() {
         if (checkCookiePermission()) {
+            //show tutorial setting
+            val = getCookie("is_tut");
+            if (val != "") {
+                if (val == "true") {
+                   is_tut = true;
+                }
+                if (val == "false") {
+                    is_tut = false;
+                }
+            }
+
             var val; //value of the currently loaded cookie
             //colorblind setting
             val = getCookie("is_colorblind");
@@ -1035,6 +1088,7 @@
         -"is_darkmode": true if darkmode
         -"is_colorblind": true if colorblind mode
         -"highscore": integer value containing the highest achieved score on this device
+        -"is_tut": false if tutorial should not be displayed on startup
     */
 </script>
 

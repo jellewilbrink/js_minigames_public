@@ -1,0 +1,24 @@
+{
+    "name": "Lockpicker",
+    "short_name": "Lockpicker",
+    "theme_color": "#00ffff",
+    "background_color": "#00ffff",
+    "display": "standalone",
+    "scope": "/js_minigames_public/",
+    "start_url": "/js_minigames_public/",
+    "description": "Lockpicker: Simple JavaScript arcade style minigame for all your devices.",
+    "icons": [
+      {
+        "src": "../resources/icons/games/lp_icon192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose":"maskable"
+      },
+      {
+        "src": "../resources/icons/games/lp_icon512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose":"maskable"
+      }
+    ]
+  }
