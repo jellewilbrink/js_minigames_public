@@ -5,7 +5,7 @@
     "background_color": "#00ffff",
     "display": "standalone",
     "scope": "/js_minigames_public/",
-    "start_url": "/js_minigames_public/",
+    "start_url": "/js_minigames_public/games/lock_picker.html",
     "description": "Lockpicker: Simple JavaScript arcade style minigame for all your devices.",
     "icons": [
       {
