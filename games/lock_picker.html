@@ -5,12 +5,12 @@
 <html lang="en">
 
 <head>
-    <title>Lock picker game</title>
+    <title>Lockpicker game</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#00ffff" />
-    <meta name="Description" content="Arcade minigame about lock picking.">
-    <meta name="keywords" content="JavaScript, game, arcade, opensource, lockpicker, pwa, Progressive Web App">
+    <meta name="Description" content="Simple JavaScript arcade minigame for all your devices. Pick the lock to reach the highest score!">
+    <meta name="keywords" content="JavaScript, game, arcade, simple, lock, picker, pwa, Progressive Web App">
 
     <link rel="icon" href="../resources/icons/games/favicon.ico">
     <link rel="icon" href="../resources/icons/games/favicon.svg" type="image/svg+xml">
@@ -36,9 +36,9 @@
             <input class="w3-check" type="checkbox" autocomplete="off" id="cb2">
             <label>Dark mode</label></p>
 
-            <button onclick="showTutorial();" type="button"
-            class="w3-button w3-border w3-ripple w3-margin-bottom">Show gameplay tutorial</button>
-                <br>
+            <button onclick="showTutorial();" type="button" class="w3-button w3-border w3-ripple w3-margin-bottom">Show
+                gameplay tutorial</button>
+            <br>
             <button onclick="showCookiePrompt();" type="button"
                 class="w3-button w3-border w3-ripple w3-margin-bottom">Change cookie preferences</button>
         </form>
@@ -119,17 +119,17 @@
             </header>
 
             <div class="w3-container">
-              <p>Welcome to the lock picker game! <br>
-            Tap or click the screen when the moving cursor is on top of the target area to pick the lock. <br>
-            This will increase your score. <br>
-            Go for the highest score! <br>
-            But beware: the game gets harder as your score increases! <br>
-            Have fun playing!</p>
+                <p>Welcome to the lock picker game! <br>
+                    Tap or click the screen when the moving cursor is on top of the target area to pick the lock. <br>
+                    This will increase your score. <br>
+                    Go for the highest score! <br>
+                    But beware: the game gets harder as your score increases! <br>
+                    Have fun playing!</p>
             </div>
 
             <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                <button onclick="document.getElementById('tut').style.display='none';"
-                    type="button" class="w3-button w3-grey w3-ripple">OK! Let's play!</button>
+                <button onclick="document.getElementById('tut').style.display='none';" type="button"
+                    class="w3-button w3-grey w3-ripple">OK! Let's play!</button>
             </div>
 
         </div>
@@ -190,13 +190,21 @@
             //set colorblind settings
             thickness_lockring = 0.5 * playerRadius; //the tickness of the outer lock ring in px
             thickness_goal = playerRadius; //the tickness of the goal in px
-            
-            col.bg = "white";
-            col.lock.inner = col.bg;
-            col.player = "#0000bb";
-            col.target = "#FF8000";
-            col.browsertheme = "#fefefe";
 
+            col = {
+                lock: {
+                    outer: "black",
+                    inner: "white",
+                    upper: "rgb(100,100,100)",
+                    keyhole: "black"
+                },
+                bg: "white", // color of the background
+                player: "#0000bb",
+                target: "#FF8000",
+                browsertheme: "#fefefe"
+            }
+            
+            document.getElementsByClassName("hover-icon-bg")[0].style.borderColor = "black";
         } else if (is_darkmode) {
             //set darkmode settings
             thickness_lockring = 2 * playerRadius; //the tickness of the outer lock ring in px
@@ -262,7 +270,7 @@
 
     var is_cookie_allowed = false; //true if user has allowed cookies
     var cookie_permission_asked = false; //true if the user was asked to permit cookies during this session
-    var is_tut=true; //true if the user should see the tutorial
+    var is_tut = true; //true if the user should see the tutorial
 
     //define the colors to use in one place
     var col = {
@@ -388,13 +396,13 @@
         initVars();
 
         //show tutorial if the user visits for the first time (or has cookies disabled)
-        if(is_tut && (!is_cookie_allowed)){
+        if (is_tut && (!is_cookie_allowed)) {
             showTutorial();
         }
 
         //set the browser theme color
         changeThemeColor();
-        
+
         //enable special graphics on special
         SpecialDayGraphics();
 
@@ -733,7 +741,7 @@
         }
     }
 
-    img_keyhole.onload=function(){
+    img_keyhole.onload = function () {
         //redraw the static frame when the image loads
         drawFrame_static();
     }
@@ -843,7 +851,7 @@
         if (is_ani) {
             let tot_shift = 3; //total shift of shape border in px
             let shift = (ani_strength * (tot_shift + 1)) -
-            1; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
+                1; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
             //if(shift<0){
             //  shift=-2; //make the overlay shap smaller to make the disappearance anti-aliasing invisible
             //}
@@ -972,9 +980,9 @@
 
     function showTutorial() {
         document.getElementById('tut').style.display = 'block';
-        
+
         //since the tutorial should be shown at most once per session its boolean is set false
-        is_tut=false;
+        is_tut = false;
     }
 
     //cookie functions
@@ -1010,7 +1018,7 @@
             val = getCookie("is_tut");
             if (val != "") {
                 if (val == "true") {
-                   is_tut = true;
+                    is_tut = true;
                 }
                 if (val == "false") {
                     is_tut = false;

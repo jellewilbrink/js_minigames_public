@@ -6,7 +6,7 @@
     "display": "standalone",
     "scope": "/js_minigames_public/",
     "start_url": "/js_minigames_public/games/lock_picker.html",
-    "description": "Lockpicker: Simple JavaScript arcade style minigame for all your devices.",
+    "description": "Simple JavaScript arcade minigame for all your devices. Pick the lock to reach the highest score!",
     "icons": [
       {
         "src": "../resources/icons/games/lp_icon192.png",
