@@ -41,7 +41,6 @@
                 <br>
             <button onclick="showCookiePrompt();" type="button"
                 class="w3-button w3-border w3-ripple w3-margin-bottom">Change cookie preferences</button>
-
         </form>
     </div>
 
@@ -389,7 +388,7 @@
         initVars();
 
         //show tutorial if the user visits for the first time (or has cookies disabled)
-        if(is_tut){
+        if(is_tut && (!is_cookie_allowed)){
             showTutorial();
         }
 
@@ -1056,6 +1055,7 @@
         setCookie("is_darkmode", "", -1);
         setCookie("is_colorblind", "", -1);
         setCookie("highscore", "", -1);
+        setCookie("is_tut", "", -1);
     }
 
     //specify a value for a new or existing cookie
