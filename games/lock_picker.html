@@ -45,8 +45,8 @@
         </form>
     </div>
     <div id="ui">
-        <div class="w3-row">
-            <div class="w3-col l2 m2 s4" style="margin-left:10px; margin-top:10px;">
+        <div class="w3-row" style="margin:10px;">
+            <div class="w3-col l2 m2 s4">
                 <!--include icon with link to the minigames homepage-->
                 <div style="width:46%; max-width:100px; position: relative;z-index:1; padding:2%;" class="w3-col s6">
                     <a href="../index.html" style="position:relative;z-index:1;">
@@ -79,20 +79,30 @@
                     </svg>
                 </div>
             </div>
-        </div>
 
-        <!--download button (if installation is supported by the browser and not performed yet)-->
-        <div class="w3-row">
-            <div class="w3-col l2 m2 s4" style="margin-left:10px; margin-top:10px;">
+            <div class="w3-col l8 m8 s4" style="height:1px;">
+            <!--no buttons in the centre of the page-->
+            </div>
+
+            <!--download button (if installation is supported by the browser and not performed yet)-->
+            <div class="w3-col l2 m2 s4">
+                <div class="w3-rest"></div>
+                <div style="width:54%;  position: relative;z-index:2; padding:2%;" class="w3-col s6">
+                </div>
                 <div style="width:46%; max-width:100px; position: relative;z-index:2; padding:2%;" class="w3-col s6">
                     <!--<object data="../resources/settings.svg" type="image/svg+xml" style="width:100%;height:100%;" ></object>-->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="feather feather-download icon" id="download_btn">
+                        class="feather feather-download icon hide" id="download_btn">
                         <!--from feather icons set. Copyright (c) 2013-2017 Cole Bemis. Licensed under MIT license-->
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
+                        <style>
+                            .hide{
+                                display:none;
+                            }
+                        </style>
                     </svg>
                 </div>
             </div>
