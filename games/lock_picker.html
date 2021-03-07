@@ -9,7 +9,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#00ffff" />
-    <meta name="Description" content="Simple JavaScript arcade minigame for all your devices. Pick the lock to reach the highest score!">
+    <meta name="Description"
+        content="Simple JavaScript arcade minigame for all your devices. Pick the lock to reach the highest score!">
     <meta name="keywords" content="JavaScript, game, arcade, simple, lock, picker, pwa, Progressive Web App">
 
     <link rel="icon" href="../resources/icons/games/favicon.ico">
@@ -25,7 +26,7 @@
 <body>
     <noscript>Your browser does not have JavaScript enabled or does not support it. If you want to play the game, please
         try changing the browser settings or use a different browser.</noscript>
-    <!--sidebar-->
+    <!--sidebar: options-->
     <div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
         <button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
         <form class="w3-container w3-card-4" id="optionsform">
@@ -43,40 +44,60 @@
                 class="w3-button w3-border w3-ripple w3-margin-bottom">Change cookie preferences</button>
         </form>
     </div>
+    <div id="ui">
+        <div class="w3-row">
+            <div class="w3-col l2 m2 s4" style="margin-left:10px; margin-top:10px;">
+                <!--include icon with link to the minigames homepage-->
+                <div style="width:46%; max-width:100px; position: relative;z-index:1; padding:2%;" class="w3-col s6">
+                    <a href="../index.html" style="position:relative;z-index:1;">
+                        <img src="../resources/icons/icon_transparent.svg" alt="JS minigames home"
+                            title="JS Minigames Home" class="w3-circle w3-ripple hover-icon-bg"
+                            style="width:100%;height:100%;max-width:100px; border-width:2px; border-style: solid;">
+                    </a>
+                </div>
+                <div style="width:46%; max-width:100px; position: relative;z-index:2; padding:2%;" class="w3-col s6">
+                    <!--<object data="../resources/settings.svg" type="image/svg+xml" style="width:100%;height:100%;" ></object>-->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-settings icon" id="settings_btn">
+                        <!--from feather icons set. Copyright (c) 2013-2017 Cole Bemis. Licensed under MIT license-->
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
+                        <style>
+                            .icon {
+                                stroke: rgb(100, 100, 100) !important;
+                                width: 100%;
+                                height: 100%;
+                            }
 
-    <div class="w3-row" id="ui-btn">
-        <div class="w3-col l2 m2 s4" style="margin-left:10px; margin-top:10px;">
-            <!--include icon with link to the minigames homepage-->
-            <div style="width:46%; max-width:100px; position: relative;z-index:1; padding:2%;" class="w3-col s6">
-                <a href="../index.html" style="position:relative;z-index:1;">
-                    <img src="../resources/icons/icon_transparent.svg" alt="JS minigames home" title="JS Minigames Home"
-                        class="w3-circle w3-ripple hover-icon-bg"
-                        style="width:100%;height:100%;max-width:100px; border-width:2px; border-style: solid;">
-                </a>
-            </div>
-            <div style="width:46%; max-width:100px; position: relative;z-index:2; padding:2%;" class="w3-col s6">
-                <!--<object data="../resources/settings.svg" type="image/svg+xml" style="width:100%;height:100%;" ></object>-->
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="feather feather-settings icon" id="settings_btn">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path
-                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                    </path>
-                    <style>
-                        .icon {
-                            stroke: rgb(100, 100, 100) !important;
-                            width: 100%;
-                            height: 100%;
-                        }
-
-                        .icon:hover {
-                            stroke: rgb(135, 125, 135) !important;
-                        }
-                    </style>
-                </svg>
+                            .icon:hover {
+                                stroke: rgb(135, 125, 135) !important;
+                            }
+                        </style>
+                    </svg>
+                </div>
             </div>
         </div>
+
+        <!--download button (if installation is supported by the browser and not performed yet)-->
+        <div class="w3-row">
+            <div class="w3-col l2 m2 s4" style="margin-left:10px; margin-top:10px;">
+                <div style="width:46%; max-width:100px; position: relative;z-index:2; padding:2%;" class="w3-col s6">
+                    <!--<object data="../resources/settings.svg" type="image/svg+xml" style="width:100%;height:100%;" ></object>-->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-download icon" id="download_btn">
+                        <!--from feather icons set. Copyright (c) 2013-2017 Cole Bemis. Licensed under MIT license-->
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!--cookie consent prompt-->
@@ -145,7 +166,7 @@
 
 <script>
     function w3_open() {
-        document.getElementById("ui-btn").style.display = "none";
+        document.getElementById("ui").style.display = "none";
         document.getElementById("mySidebar").style.width = "100%";
         document.getElementById("mySidebar").style.display = "block";
 
@@ -157,7 +178,7 @@
 
     function w3_close() {
         document.getElementById("mySidebar").style.display = "none";
-        document.getElementById("ui-btn").style.display = "block";
+        document.getElementById("ui").style.display = "block";
     }
 
     var is_colorblind = false;
@@ -203,7 +224,7 @@
                 target: "#FF8000",
                 browsertheme: "#fefefe"
             }
-            
+
             document.getElementsByClassName("hover-icon-bg")[0].style.borderColor = "black";
         } else if (is_darkmode) {
             //set darkmode settings
@@ -373,7 +394,11 @@
 
     window.onload = () => {
         document.getElementById("settings_btn").addEventListener("click", w3_open);
+        document.getElementById("download_btn").addEventListener("click", downloadApp);
         document.getElementById("optionsform").addEventListener("click", handleOptions);
+
+        //show the download button (if applicable)
+        displayDownloadBtn();
 
         //apply saved settings from cookies (if applicable)
         loadCookieSettings();
@@ -983,6 +1008,55 @@
 
         //since the tutorial should be shown at most once per session its boolean is set false
         is_tut = false;
+    }
+
+    //download / install button functions
+    //largely from: https://web.dev/customize-install/
+
+    var isShownDownloadBtn = false; //true if download button needs to be shown
+    let deferredPrompt; // Initialize deferredPrompt for use later to show browser install prompt.
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        // Update UI notify the user they can install the PWA
+        isShownDownloadBtn = true;
+        displayDownloadBtn();
+    });
+
+    //Hide the download button if the app is installed
+    window.addEventListener('appinstalled', () => {
+        // Hide the app-provided install promotion
+        isShownDownloadBtn = false;
+        displayDownloadBtn();
+        // Clear the deferredPrompt so it can be garbage collected
+        deferredPrompt = null;
+        // Optionally, send analytics event to indicate successful install
+        console.log('PWA was installed');
+    });
+
+    //The user wants to install the app => initiate the event for this
+   async function downloadApp() {
+        // Hide the app-provided install promotion
+        isShownDownloadBtn = false;
+        displayDownloadBtn();
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // We've used the prompt, and can't use it again, throw it away
+        deferredPrompt = null;
+    }
+    //display or hide the download button (based on boolean value)
+    function displayDownloadBtn() {
+        if(isShownDownloadBtn){
+            //show the download button
+            document.getElementById("download_btn").style.display = "block";
+        }
+        else{
+            //hide the downloadbutton
+            document.getElementById("download_btn").style.display = "none";
+        }
     }
 
     //cookie functions
