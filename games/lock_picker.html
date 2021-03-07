@@ -1023,7 +1023,7 @@
     //download / install button functions
     //largely from: https://web.dev/customize-install/
 
-    var isShownDownloadBtn = true; //true if download button needs to be shown
+    var isShownDownloadBtn = false; //true if download button needs to be shown
     let deferredPrompt; // Initialize deferredPrompt for use later to show browser install prompt.
 
     window.addEventListener('beforeinstallprompt', (e) => {
