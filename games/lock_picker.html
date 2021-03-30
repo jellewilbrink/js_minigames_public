@@ -81,7 +81,7 @@
             </div>
 
             <div class="w3-col l8 m8 s4" style="height:1px;">
-            <!--no buttons in the centre of the page-->
+                <!--no buttons in the centre of the page-->
             </div>
 
             <!--download button (if installation is supported by the browser and not performed yet)-->
@@ -99,8 +99,8 @@
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
                         <style>
-                            .hide{
-                                display:none;
+                            .hide {
+                                display: none;
                             }
                         </style>
                     </svg>
@@ -297,7 +297,7 @@
      *** collision detection (especially on mobile android) is not always accurate  
      */
 
-    const code_version = "2.3";
+    const code_version = "2.4";
 
     var is_cookie_allowed = false; //true if user has allowed cookies
     var cookie_permission_asked = false; //true if the user was asked to permit cookies during this session
@@ -768,10 +768,45 @@
     var isSpecialDay = false; //true if there is a special image for today
     const today = new Date(); //date information of the current day
     var img_keyhole = new Image(); //image to display instead of normal keyhole
+    var pos_keyhole= {x: 0, y:0};
     function SpecialDayGraphics() {
         if (isSameDay(today, new Date("14 Feb 2021"))) {
             //valentines day
-            img_keyhole.src = '../resources/redheart.png';
+            img_keyhole.src = '../resources/keyhole/kh_heart.png';
+            img_keyhole.width=90;
+            img_keyhole.height=90;
+            pos_keyhole= {x: 250, y:230};
+            isSpecialDay = true;
+        }
+
+        if (true||isSameDay(today, new Date("2 Apr 2021")) ||
+            isSameDay(today, new Date("3 Apr 2021")) ||
+            isSameDay(today, new Date("4 Apr 2021")) ||
+            isSameDay(today, new Date("5 Apr 2021")) ) {
+            //Easter
+            img_keyhole.src = '../resources/keyhole/kh_bunny.png';
+            img_keyhole.width=50;
+            img_keyhole.height=116;
+            pos_keyhole= {x: 250, y:200};
+            isSpecialDay = true;
+        }
+        if (isSameDay(today, new Date("28 Oct 2021")) ||
+            isSameDay(today, new Date("29 Oct 2021")) ||
+            isSameDay(today, new Date("30 Oct 2021")) ||
+            isSameDay(today, new Date("31 Oct 2021")) ||
+            isSameDay(today, new Date("1 Nov 2021")) ||
+            isSameDay(today, new Date("2 Nov 2021")) ||
+            isSameDay(today, new Date("3 Nov 2021"))) {
+            //Halloween
+            img_keyhole.src = '../resources/keyhole/kh_skull_d.png';
+
+            if(is_darkmode){
+                img_keyhole.src = '../resources/keyhole/kh_skull_l.png';
+            }
+
+            img_keyhole.width=50;
+            img_keyhole.height=90;
+            pos_keyhole= {x: 250, y:210};
             isSpecialDay = true;
         }
     }
@@ -841,7 +876,7 @@
             context2.fill();
         } else {
             //special day image
-            context2.drawImage(img_keyhole, 205, 190, 90, 90);
+            context2.drawImage(img_keyhole, pos_keyhole.x-(img_keyhole.width/2), pos_keyhole.y-(img_keyhole.width/2), img_keyhole.width, img_keyhole.height);
         }
 
         //outer circle
@@ -885,8 +920,7 @@
         //only draw if animation is required
         if (is_ani) {
             let tot_shift = 3; //total shift of shape border in px
-            let shift = (ani_strength * (tot_shift + 1)) -
-                1; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
+            let shift = (ani_strength * tot_shift ) ; //compute the shift. total shift is the starting point. -1 the end. (actually 0, but here -1, to make this overlay invisible)
             //if(shift<0){
             //  shift=-2; //make the overlay shap smaller to make the disappearance anti-aliasing invisible
             //}
@@ -906,7 +940,7 @@
             } else {
                 //special day image
                 shift *= 3;
-                context.drawImage(img_keyhole, 205 - (shift / 2), 190 - shift / 2, 90 + shift, 90 + shift);
+                context.drawImage(img_keyhole, pos_keyhole.x-(img_keyhole.width/2) - (shift / 2), pos_keyhole.y-(img_keyhole.width/2) - (shift / 2), img_keyhole.width + shift, img_keyhole.height +shift);
             }
 
             aniClick();
@@ -1048,7 +1082,7 @@
     });
 
     //The user wants to install the app => initiate the event for this
-   async function downloadApp() {
+    async function downloadApp() {
         // Hide the app-provided install promotion
         isShownDownloadBtn = false;
         displayDownloadBtn();
@@ -1059,11 +1093,10 @@
     }
     //display or hide the download button (based on boolean value)
     function displayDownloadBtn() {
-        if(isShownDownloadBtn){
+        if (isShownDownloadBtn) {
             //show the download button
             document.getElementById("download_btn").style.display = "block";
-        }
-        else{
+        } else {
             //hide the downloadbutton
             document.getElementById("download_btn").style.display = "none";
         }
