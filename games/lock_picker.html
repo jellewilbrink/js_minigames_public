@@ -786,11 +786,11 @@
             //Easter
             img_keyhole.src = '../resources/keyhole/kh_bunny.png';
             img_keyhole.width=50;
-            img_keyhole.height=116;
+            img_keyhole.height=114;
             pos_keyhole= {x: 250, y:200};
             isSpecialDay = true;
         }
-        if (isSameDay(today, new Date("28 Oct 2021")) ||
+        if (true||isSameDay(today, new Date("28 Oct 2021")) ||
             isSameDay(today, new Date("29 Oct 2021")) ||
             isSameDay(today, new Date("30 Oct 2021")) ||
             isSameDay(today, new Date("31 Oct 2021")) ||
@@ -804,9 +804,21 @@
                 img_keyhole.src = '../resources/keyhole/kh_skull_l.png';
             }
 
-            img_keyhole.width=50;
-            img_keyhole.height=90;
+            img_keyhole.width=60;
+            img_keyhole.height=84;
             pos_keyhole= {x: 250, y:210};
+            isSpecialDay = true;
+        }
+        if (isSameDay(today, new Date("21 Jun 2021")) ||
+            isSameDay(today, new Date("22 Jun 2021")) ||
+            isSameDay(today, new Date("23 Jun 2021")) ||
+            isSameDay(today, new Date("24 Jun 2021"))||
+            isSameDay(today, new Date("24 Jun 2021")) ) {
+            //midsummer / summer solstice
+            img_keyhole.src = '../resources/keyhole/kh_sun.png';
+            img_keyhole.width=90;
+            img_keyhole.height=96;
+            pos_keyhole= {x: 250, y:225};
             isSpecialDay = true;
         }
     }
