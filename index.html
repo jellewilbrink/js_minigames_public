@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#00c5d3" />
   <meta name="Description" content="Collection of simple javascript games">
   <meta name="keywords" content="JavaScript, game, arcade, opensource, pwa">
-  <meta name="google-site-verification" content="zRUYMZsO5xiXYiGCb3Fs-PXDScCFMBsWRACQQqaVr88" />
+  <meta name="google-site-verification" content="VBeJTGkw_hKGvG8yhtKKLJ7rsJF7hfBmRyw-ZgUfEo0" />
 
   <script src="index.js"></script>
   <link rel="icon" href="resources/icons/favicon.ico">
@@ -46,11 +46,11 @@
   }
 </style>
 
-<body class="w3-light-grey"> 
+<body class="w3-light-grey">
 
   <!--sidebar-->
   <div class="w3-col l2 m2 s4" id="ui-btn">
-    <div  style="margin-left:10px; margin-top:10px;">
+    <div style="margin-left:10px; margin-top:10px;">
       <!--include icon with link to the minigames homepage-->
       <div style="width:46%; max-width:100px; position: relative;z-index:1; padding:2%;" class="w3-col s6">
         <a href="#" style="position:relative;z-index:1;">
@@ -124,16 +124,16 @@
           <div class="w3-cell-row ">
             <div class="w3-cell w3-mobile">
               <a href="https://tmaiadev-snake.netlify.app/" target="_blank" rel="noreferrer"
-                class="w3-button w3-border w3-ripple w3-margin-bottom w3-col l10 m10 s12" >Snake Game</a>
+                class="w3-button w3-border w3-ripple w3-margin-bottom w3-col l10 m10 s12">Snake Game</a>
             </div>
-    
+
             <div class="w3-cell w3-mobile">
               <a href="https://tmaiadev-tetra.netlify.app/" target="_blank" rel="noreferrer"
                 class="w3-button w3-border w3-ripple w3-margin-bottom w3-col l10 m10 s12">Tetra Game</a>
             </div>
-          </div>  
-      </div>
-  
+          </div>
+        </div>
+
       </div>
       <h3>Sites</h3>
       <p>
@@ -142,48 +142,49 @@
       </p>
       <p>
         An appstore for free games and webapps:
-        <div class=w3-row>
-          <div class="w3-col l4 m6">
-            <div class="w3-cell-row ">
-              <div class="w3-cell w3-mobile">
-                            <!--use target=_blank to make the url open in the browser instead of this PWA-->
-                <a href="https://appsco.pe/category/games" target="_blank" rel="noreferrer"
-                  class="w3-button w3-border w3-ripple w3-margin-bottom w3-col l10 m10 s12" >Appscope</a>
-              </div>
-            </div>  
+      <div class=w3-row>
+        <div class="w3-col l4 m6">
+          <div class="w3-cell-row ">
+            <div class="w3-cell w3-mobile">
+              <!--use target=_blank to make the url open in the browser instead of this PWA-->
+              <a href="https://appsco.pe/category/games" target="_blank" rel="noreferrer"
+                class="w3-button w3-border w3-ripple w3-margin-bottom w3-col l10 m10 s12">Appscope</a>
+            </div>
+          </div>
         </div>
-      </p>
-      
+        </p>
+
+      </div>
+
+      <!-- Footer -->
+      <footer class="w3-container w3-padding-32 w3-dark-grey">
+        <div class="w3-row-padding">
+          <div class="w3-col l12 m12 s12">
+            <p>Arcade games in plain javascript. Both online and offline. Installable as app using PWA technology.</p>
+            <p>This site is open source. More information and the source code are on
+              <a href="https://github.com/MrHaan/js_minigames_public" target="_blank" rel="noreferrer">GitHub</a>
+            </p>
+            <p>This site is powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank"
+                rel="noreferrer">w3.css</a></p>
+          </div>
+        </div>
+      </footer>
+
+      <!-- End page content -->
     </div>
 
-    <!-- Footer -->
-    <footer class="w3-container w3-padding-32 w3-dark-grey">
-      <div class="w3-row-padding">
-        <div class="w3-col l12 m12 s12">
-          <p>Arcade games in plain javascript. Both online and offline. Installable as app using PWA technology.</p>
-          <p>This site is open source. More information and the source code are on
-            <a href="https://github.com/MrHaan/js_minigames_public" target="_blank" rel="noreferrer">GitHub</a> </p>
-          <p>This site is powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank"
-              rel="noreferrer">w3.css</a></p>
-        </div>
-      </div>
-    </footer>
+    <script>
+      // Script to open and close sidebar
+      function w3_open() {
+        document.getElementById("mySidebar").style.display = "block";
+        document.getElementById("myOverlay").style.display = "block";
+      }
 
-    <!-- End page content -->
-  </div>
-
-  <script>
-    // Script to open and close sidebar
-    function w3_open() {
-      document.getElementById("mySidebar").style.display = "block";
-      document.getElementById("myOverlay").style.display = "block";
-    }
-
-    function w3_close() {
-      document.getElementById("mySidebar").style.display = "none";
-      document.getElementById("myOverlay").style.display = "none";
-    }
-  </script>
+      function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("myOverlay").style.display = "none";
+      }
+    </script>
 
 </body>
 
